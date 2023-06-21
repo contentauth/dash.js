@@ -653,11 +653,25 @@ function PlaybackController() {
 
     function _onPlaybackTimeUpdated() {
         if (streamInfo) {
-            eventBus.trigger(Events.PLAYBACK_TIME_UPDATED, {
+            let e = {
                 timeToEnd: getTimeToStreamEnd(),
                 time: getTime(),
                 streamId: streamInfo.id
-            });
+            }
+
+            if (streamController) {
+                if (streamController.getC2pa() !== null) {
+                    let vs = streamController.getC2pa().getC2paVerificationStatus(getTime(), streamInfo, dashMetrics);
+
+                    e['c2pa_status'] = vs;
+                }
+            }
+
+            // TODO(hawang) remove debug info
+            console.log('Playtime changed ');
+            console.log(e);
+
+            eventBus.trigger(Events.PLAYBACK_TIME_UPDATED, e);
         }
     }
 

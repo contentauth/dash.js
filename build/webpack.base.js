@@ -32,6 +32,10 @@ const config = {
                         options: {presets: ['@babel/env']}
                     }
                 ]
+            },
+            {
+                resourceQuery: /file/,
+                type: 'asset/resource',
             }
         ]
     },

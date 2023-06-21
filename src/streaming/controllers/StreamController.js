@@ -48,6 +48,8 @@ import Errors from '../../core/errors/Errors';
 import EventController from './EventController';
 import ConformanceViolationConstants from '../constants/ConformanceViolationConstants';
 
+import { C2paController } from '../C2pa';
+
 const PLAYBACK_ENDED_TIMER_INTERVAL = 200;
 const DVR_WAITING_OFFSET = 2;
 
@@ -64,7 +66,7 @@ function StreamController() {
         playbackController, serviceDescriptionController, mediaPlayerModel, customParametersModel, isPaused,
         initialPlayback, initialSteeringRequest, playbackEndedTimerInterval, bufferSinks, preloadingStreams,
         supportsChangeType, settings,
-        firstLicenseIsFetched, waitForPlaybackStartTimeout, providedStartTime, errorInformation;
+        firstLicenseIsFetched, waitForPlaybackStartTimeout, providedStartTime, errorInformation, c2pa;
 
     function setup() {
         logger = Debug(context).getInstance().getLogger(instance);
@@ -116,6 +118,18 @@ function StreamController() {
         }
 
         registerEvents();
+    }
+
+    function setC2pa(enableC2pa) {
+        if (enableC2pa) {
+            console.log('enabling C2PA');
+            c2pa = C2paController(eventBus);
+        } else 
+            c2pa = null;
+    }
+
+    function getC2pa() {
+        return c2pa;
     }
 
     function registerEvents() {
@@ -1623,7 +1637,9 @@ function StreamController() {
         getActiveStream,
         getInitialPlayback,
         getAutoPlay,
-        reset
+        reset,
+        setC2pa,
+        getC2pa
     };
 
     setup();

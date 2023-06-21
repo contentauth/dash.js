@@ -163,8 +163,7 @@ function MediaPlayer() {
         uriFragmentModel,
         domStorage,
         segmentBaseController;
-
-    /*
+    /* 
     ---------------------------------------------------------------------------
 
         INIT FUNCTIONS
@@ -268,7 +267,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function initialize(view, source, autoPlay, startTime = NaN) {
+    function initialize(view, source, autoPlay, startTime = NaN, enableC2pa = false) {
         if (!capabilities) {
             capabilities = Capabilities(context).getInstance();
             capabilities.setConfig({
@@ -421,6 +420,9 @@ function MediaPlayer() {
         if (source) {
             attachSource(source, startTime);
         }
+
+        console.log('setting c2pa to be: ' + enableC2pa);
+        streamController.setC2pa(enableC2pa);
 
         logger.info('[dash.js ' + getVersion() + '] ' + 'MediaPlayer has been initialized');
     }
