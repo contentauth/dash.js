@@ -801,5 +801,32 @@
                 ]
             }
         ]
+    },
+    {
+        "section": "Content Authenticity",
+        "samples": [
+            {
+                "title": "Native C2PA validation inside dash.js",
+                "description": "This example shows how to use the native dash.js integration.",
+                "href": "c2pa/c2pa-demo-native.html",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio",
+                    "C2PA"
+                ]
+            },
+            {
+                "title": "C2PA Validation outside of dash.js",
+                "description": "This example shows how to use C2PA validation outside of dash.js.",
+                "href": "c2pa/c2pa-demo-external.html",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio",
+                    "C2PA"
+                ]
+            }
+        ]
     }
 ]
