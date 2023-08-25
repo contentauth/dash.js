@@ -10,7 +10,8 @@ var C2PAMenu = function() {
     const c2paMenuItems = {
         'SIG_ISSUER': 'Signature Issuer',
         'CLAIM_GENERATOR': 'Claim Generator',
-        'VALIDATION_STATUS': 'Current Validation Status'
+        'VALIDATION_STATUS': 'Current Validation Status',
+        'ALERT': 'Alert'
     };
 
     const c2paMenuValueToKeyMap = {};
@@ -20,6 +21,20 @@ var C2PAMenu = function() {
     
     //Delimiter to separate the menu item name from its value
     const c2paMenuDelimiter = ' : ';
+
+    //Alert message to be shown when the c2pa validation has failed
+    const c2paAlertPrefix = "The region(s) between ";
+    const c2paAlertSuffix = " may have been comprimised";
+
+    //Create an alert message if the c2pa validation has failed
+    let c2paAlertMessage = function (compromisedRegions) {
+        if (compromisedRegions.length > 0) {
+            return c2paAlertPrefix + compromisedRegions.join(', ') + c2paAlertSuffix;
+        }
+        else {
+            return null;
+        }
+    }
 
     return {
 
@@ -36,7 +51,7 @@ var C2PAMenu = function() {
         },
 
         //Functions to access the c2pa menu items from the c2pa manifest
-        c2paItem: function (itemName, c2paStatus) {
+        c2paItem: function (itemName, c2paStatus, compromisedRegions = []) {
 
             const verificationStatus = c2paStatus.verified;
             const manifest = c2paStatus.details.video.manifest;
@@ -48,7 +63,17 @@ var C2PAMenu = function() {
                 return manifest['manifestStore']['activeManifest']['claimGenerator'];
             }
             if (itemName == "VALIDATION_STATUS") {
-                return verificationStatus;
+                switch (verificationStatus) {
+                    case true:
+                        return "Passed";
+                    case false:
+                        return "Failed";
+                    default:
+                        return "Unknown";
+                }
+            }
+            if (itemName == "ALERT") {
+                return c2paAlertMessage(compromisedRegions);
             }
     
             return null;
@@ -171,6 +196,18 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
         }
     };
 
+    //Format time from seconds to mm:ss
+    let formatTime = function(seconds) {
+
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.round(seconds % 60);
+        
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+        
+        return `${formattedMinutes}:${formattedSeconds}`;
+    };
+
     //Adjust c2pa menu size with respect to the player size
     let adjustC2PAMenu = function () {
 
@@ -184,7 +221,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
     };
 
     //Create a new progress segment to be added to the c2pa progress bar
-    let createTimelineSegment = function (segmentStartTime, segmentEndTime, validationStatus) {
+    let createTimelineSegment = function (segmentStartTime, segmentEndTime, verificationStatus) {
 
         const segment = document.createElement('div');
         segment.className = 'seekbar-play-c2pa';
@@ -192,12 +229,12 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
         segment.style.width = '0%';
         segment.dataset.startTime = segmentStartTime;
         segment.dataset.endTime = segmentEndTime;
-        segment.dataset.type = validationStatus;
+        segment.dataset.verificationStatus = verificationStatus;
 
-        if (validationStatus == "true") { //c2pa validation passed
+        if (verificationStatus == "true") { //c2pa validation passed
             segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-passed').trim();
         }
-        else if (validationStatus == "false") { //c2pa validation failed
+        else if (verificationStatus == "false") { //c2pa validation failed
             segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-failed').trim();
         }
         else { //c2pa validation not available or unkwown
@@ -248,7 +285,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
 
         //If no segments have been added to the timeline, or if the validation status has changed with respect to the last segment
         //We add a new segment to the timeline
-        if (progressSegments.length === 0 || progressSegments[progressSegments.length - 1].dataset.type != verificationStatus) {
+        if (progressSegments.length === 0 || progressSegments[progressSegments.length - 1].dataset.verificationStatus != verificationStatus) {
 
             console.log("[C2PA] New validation status: ", verificationStatus);
 
@@ -302,25 +339,46 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
         });
     };
 
+    //Get time regions that have failed the c2pa validation
+    let getCompromisedRegions = function () {
+
+        let compromisedRegions = [];
+        progressSegments.forEach(segment => {
+            if (segment.dataset.verificationStatus === "false") {
+                const startTime = parseFloat(segment.dataset.startTime);
+                const endTime = parseFloat(segment.dataset.endTime);
+                compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+            }
+        });
+
+        return compromisedRegions;
+    };
+
     //Update the c2pa menu items with the values from the c2pa manifest
     let updateC2PAMenu = function (c2paStatus) {
 
         //Get all the items in the c2pa menu
-        const c2paItems = c2paMenu.el().querySelectorAll(".vjs-menu-item-text");
+        const c2paItems = c2paMenu.el().querySelectorAll(".vjs-menu-item");
+        const compromisedRegions = getCompromisedRegions();
 
         c2paItems.forEach(c2paItem => {
 
             //Menu items are organized as key/name + value, separated by a delimiter
             const c2paItemText = c2paItem.innerText;
             const c2paItemName = c2paItemText.split(c2paMenuInstance.c2paMenuDelimiter())[0];
+
             //Based on the plain name of the menu item, we retrieve the key from the c2paMenuInstance
             //And based on that key, we get the corresponding value from the c2pa manifest
-            const c2paItemValue = c2paMenuInstance.c2paItem(c2paMenuInstance.c2paMenuValueToKeyMap(c2paItemName), c2paStatus);
-            console.log("[C2PA] Menu item: ", c2paItemName, c2paItemValue)
+            const c2paItemKey = c2paMenuInstance.c2paMenuValueToKeyMap(c2paItemName)
+            const c2paItemValue = c2paMenuInstance.c2paItem(c2paItemKey, c2paStatus, compromisedRegions);
+            console.log("[C2PA] Menu item: ", c2paItemName, c2paItemKey, c2paItemValue)
 
-            //If the value is not null, we update the menu item text
-            if (c2paItemValue != null) {
+            if (c2paItemValue != null) { //If the value is not null, we update the menu item text and show it
                 c2paItem.innerText = c2paItemName + c2paMenuInstance.c2paMenuDelimiter() + c2paItemValue;
+                c2paItem.style.display = "block";
+            }
+            else { //If the value is null, we hide the menu item
+                c2paItem.style.display = "none";
             }
         });
     };

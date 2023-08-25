@@ -28,7 +28,7 @@
 
     <script class="code">
 
-        //c2pa player instance
+        /* c2pa player instance */
         var c2paPlayer;
         
         function init() {
@@ -38,10 +38,10 @@
 
             video = document.querySelector("#videoPlayer");
             dashPlayer = dashjs.MediaPlayer().create();
-            //Initialize dashjs player with c2pa verification enabled
+            /* Initialize dashjs player with c2pa verification enabled */
             dashPlayer.initialize(video, url, true, NaN, true);
 
-            //Initialize videojs player and c2pa player
+            /* Initialize videojs player and c2pa player */
             var videoJsPlayer = videojs('videoPlayer', {fluid: true});
             c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
             c2paPlayer.initialize();
@@ -50,7 +50,7 @@
         }
 
         function playbackUpdate(e) {
-            //Update c2pa player with current c2pa status update
+            /* Update c2pa player with current c2pa status update */
             c2paPlayer.playbackUpdate(e.c2pa_status);
         }
         
