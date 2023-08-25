@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>C2PA Video Demo</title>
+
+    <script src="../../dist/dash.all.debug.js"></script>
+    
+    <!-- Bootstrap core CSS -->
+    <link href="../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../lib/main.css" rel="stylesheet">
+
+    <style>
+        video {
+            width: 100%;
+        }
+        .dash-video-player {
+            position: relative; 
+            margin: 0 auto;
+            line-height: 1;
+        }
+    </style>
+
+    <script type="module" class="code">
+        import {c2pa_init} from './c2pa-plugin.js';
+
+        function init() {
+            var video,
+                player,
+                url = "../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
+
+            video = document.querySelector(".videoContainer video");
+            player = dashjs.MediaPlayer().create();
+
+            c2pa_init(player, function (e) {
+                console.log(e);
+
+                var status = e.c2pa_status;
+                document.querySelector('#seg_st').innerHTML = e.time;
+                if (status.verified) {
+                    document.querySelector('#manifest1').innerHTML = status.details.video.manifest.manifestStore.activeManifest.claimGenerator;
+                    document.querySelector('#manifest2').innerHTML = status.details.video.manifest.manifestStore.activeManifest.signatureInfo.issuer;
+                } else {
+                    document.querySelector('#manifest1').innerHTML = "Failed to verify";
+                    document.querySelector('#manifest2').innerHTML = status.details.video.error;
+                }
+            }).then(() => {
+                player.initialize(video, url, true);
+            });
+
+            var c2pa_info_icon = document.querySelector('.c2pa-info-icon');
+            var c2pa_info_info = document.querySelector('.c2pa-info-overlay');
+            c2pa_info_icon.addEventListener('click', () => {
+                if (c2pa_info_info.style.display === 'none') {
+                    c2pa_info_info.style.display = 'block';
+                } else {
+                    c2pa_info_info.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            init();
+        });
+        
+    </script>
+</head>
+<body>
+
+<main>
+    <div class="container py-4">
+        <header class="pb-3 mb-4 border-bottom">
+            <img class=""
+                 src="../lib/img/dashjs-logo.png"
+                 width="200">
+        </header>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="h-100 p-5 bg-light border rounded-3">
+                    <h3>Extending dash.js w/ C2PA Video Verification</h3>
+                    <p>This sample shows how to extend dash.js with C2PA SDKs to verify video segments, and associated UI to show validation status and C2PA information</p>
+                </div>
+            </div>
+            <div class="col-md-8 ">
+                <div class="dash-video-player code">
+                    <div class="videoContainer" id="videoContainer">
+                        <video preload="auto" autoplay></video>
+                        <div class="c2pa-info">
+                            <a class="c2pa-info-icon">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iOS41IiBmaWxsPSJibGFjayIgZmlsbC1vcGFjaXR5PSIwLjI1IiBzdHJva2U9IndoaXRlIi8+CjxjaXJjbGUgY3g9IjkuOTk5MDYiIGN5PSI1Ljc2OTA4IiByPSIxLjE1Mzg1IiBmaWxsPSJ3aGl0ZSIvPgo8cmVjdCB4PSI5LjIzMDk2IiB5PSI4LjQ2MTQzIiB3aWR0aD0iMS41Mzg0NiIgaGVpZ2h0PSI2LjE1Mzg0IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K">
+                            </a>
+                            <div class="c2pa-info-overlay">
+                                <ul class="data">
+                                    <li>
+                                        <div class="label">Current time</div>
+                                        <div class="value" id="seg_st"></div>
+                                    </li>
+                                    <li>
+                                        <div class="label">Claim Generator</div>
+                                        <div class="value" id="manifest1"></div>
+                                    </li>
+                                    <li>
+                                        <div class="label">Signature Issuer</div>
+                                        <div class="value" id="manifest2"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="code-output"></div>
+            </div>
+        </div>
+        <footer class="pt-3 mt-4 text-muted border-top">
+            &copy; DASH-IF
+        </footer>
+    </div>
+</main>
+
+<script src="../highlighter.js"></script>
+</body>
+</html>
