@@ -5,19 +5,19 @@
     <title>Native C2PA validation inside dash.js</title>
 
     <!-- dash-js -->
-    <script src="../../dist/dash.all.debug.js"></script>
+    <script src="../../../dist/dash.all.debug.js"></script>
 
     <!-- Bootstrap core CSS -->
-    <link href="../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="../lib/main.css" rel="stylesheet">
+    <link href="../../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../../lib/main.css" rel="stylesheet">
     
     <!-- video-js -->
     <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
 
     <!-- c2pa player -->
-    <link href="c2pa-player.css" rel="stylesheet" />
-    <script class="code" src="c2pa-player.js"></script>
+    <link href="../c2pa-player.css" rel="stylesheet" />
+    <script class="code" src="../c2pa-player.js"></script>
 
     <style>
         video {
@@ -34,7 +34,7 @@
         function init() {
             var video,
                 dashPlayer,
-                url = "../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
+                url = "../../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
 
             video = document.querySelector("#videoPlayer");
             dashPlayer = dashjs.MediaPlayer().create();
@@ -62,7 +62,7 @@
     <div class="container py-4">
         <header class="pb-3 mb-4 border-bottom">
             <img class=""
-                 src="../lib/img/dashjs-logo.png"
+                 src="../../lib/img/dashjs-logo.png"
                  width="200">
         </header>
         <div class="row">
@@ -93,6 +93,6 @@
         init();
     });
 </script>
-<script src="../highlighter.js"></script>
+<script src="../../highlighter.js"></script>
 </body>
 </html>

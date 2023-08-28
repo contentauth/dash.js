@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <title>C2PA Video Demo</title>
 
-    <script src="../../dist/dash.all.debug.js"></script>
+    <script src="../../../dist/dash.all.debug.js"></script>
     
     <!-- Bootstrap core CSS -->
-    <link href="../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="../lib/main.css" rel="stylesheet">
+    <link href="../../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../../lib/main.css" rel="stylesheet">
 
     <style>
         video {
@@ -27,7 +27,7 @@
         function init() {
             var video,
                 player,
-                url = "../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
+                url = "../../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
 
             video = document.querySelector(".videoContainer video");
             player = dashjs.MediaPlayer().create();
@@ -71,7 +71,7 @@
     <div class="container py-4">
         <header class="pb-3 mb-4 border-bottom">
             <img class=""
-                 src="../lib/img/dashjs-logo.png"
+                 src="../../lib/img/dashjs-logo.png"
                  width="200">
         </header>
         <div class="row">
@@ -121,6 +121,6 @@
     </div>
 </main>
 
-<script src="../highlighter.js"></script>
+<script src="../../highlighter.js"></script>
 </body>
 </html>
