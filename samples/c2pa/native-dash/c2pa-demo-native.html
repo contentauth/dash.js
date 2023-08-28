@@ -37,11 +37,13 @@
                 url = "../../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
 
             video = document.querySelector("#videoPlayer");
+            /* Create dashjs player with c2pa verification enabled */
+            /* Responsible for streaming video and executing c2pa validation */
             dashPlayer = dashjs.MediaPlayer().create();
-            /* Initialize dashjs player with c2pa verification enabled */
             dashPlayer.initialize(video, url, true, NaN, true);
 
-            /* Initialize videojs player and c2pa player */
+            /* Create videojs player and c2pa player */
+            /* Responsible for UI and playback control */
             var videoJsPlayer = videojs('videoPlayer', {fluid: true});
             c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
             c2paPlayer.initialize();
@@ -53,6 +55,10 @@
             /* Update c2pa player with current c2pa status update */
             c2paPlayer.playbackUpdate(e.c2pa_status);
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            init();
+        });
         
     </script>
 </head>
@@ -69,7 +75,7 @@
             <div class="col-md-4">
                 <div class="h-100 p-5 bg-light border rounded-3">
                     <h3>C2PA Integration w/ dash.js</h3>
-                    <p>This sample shows how to use dash.js with C2PA verification integrated into the DASH player itself.</p>
+                    <p>This sample shows how to use dash.js with C2PA verification integrated into the DASH player itself, and associated UI to show validation status and C2PA information.</p>
                 </div>
             </div>
             <div class="col-md-8">
@@ -87,12 +93,6 @@
     </div>
 </main>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
-</script>
 <script src="../../highlighter.js"></script>
 </body>
 </html>

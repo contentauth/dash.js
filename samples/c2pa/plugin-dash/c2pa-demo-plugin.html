@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>C2PA Video Demo</title>
+    <title>C2PA Validation with external dash.js plugin</title>
 
     <script src="../../../dist/dash.all.debug.js"></script>
     
@@ -10,52 +10,50 @@
     <link href="../../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="../../lib/main.css" rel="stylesheet">
 
+    <!-- video-js -->
+    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+    <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
+
+    <!-- c2pa player -->
+    <link href="../c2pa-player.css" rel="stylesheet" />
+    <script class="code" src="../c2pa-player.js"></script>
+
     <style>
         video {
-            width: 100%;
-        }
-        .dash-video-player {
-            position: relative; 
-            margin: 0 auto;
-            line-height: 1;
+            width: 640px;
+            height: 360px;
         }
     </style>
 
     <script type="module" class="code">
         import {c2pa_init} from './c2pa-plugin.js';
 
+        /* c2pa player instance */
+        var c2paPlayer;
+
         function init() {
             var video,
-                player,
+                dashPlayer,
                 url = "../../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
 
-            video = document.querySelector(".videoContainer video");
-            player = dashjs.MediaPlayer().create();
+            video = document.querySelector("#videoPlayer");
+            /* Create dashjs player */
+            /* Responsible for streaming video */
+            dashPlayer = dashjs.MediaPlayer().create();
 
-            c2pa_init(player, function (e) {
-                console.log(e);
+            /* Create videojs player and c2pa player */
+            /* Responsible for UI and playback control */
+            var videoJsPlayer = videojs('videoPlayer', {fluid: true});
+            c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
+            c2paPlayer.initialize();
 
-                var status = e.c2pa_status;
-                document.querySelector('#seg_st').innerHTML = e.time;
-                if (status.verified) {
-                    document.querySelector('#manifest1').innerHTML = status.details.video.manifest.manifestStore.activeManifest.claimGenerator;
-                    document.querySelector('#manifest2').innerHTML = status.details.video.manifest.manifestStore.activeManifest.signatureInfo.issuer;
-                } else {
-                    document.querySelector('#manifest1').innerHTML = "Failed to verify";
-                    document.querySelector('#manifest2').innerHTML = status.details.video.error;
-                }
+            /* Create c2pa plugin*/
+            /* Responsible for executing c2pa validation */
+            c2pa_init(dashPlayer, function (e) {
+                /* Update c2pa player with current c2pa status update */
+                c2paPlayer.playbackUpdate(e.c2pa_status);
             }).then(() => {
-                player.initialize(video, url, true);
-            });
-
-            var c2pa_info_icon = document.querySelector('.c2pa-info-icon');
-            var c2pa_info_info = document.querySelector('.c2pa-info-overlay');
-            c2pa_info_icon.addEventListener('click', () => {
-                if (c2pa_info_info.style.display === 'none') {
-                    c2pa_info_info.style.display = 'block';
-                } else {
-                    c2pa_info_info.style.display = 'none';
-                }
+                dashPlayer.initialize(video, url, true);
             });
         }
 
@@ -82,32 +80,7 @@
                 </div>
             </div>
             <div class="col-md-8 ">
-                <div class="dash-video-player code">
-                    <div class="videoContainer" id="videoContainer">
-                        <video preload="auto" autoplay></video>
-                        <div class="c2pa-info">
-                            <a class="c2pa-info-icon">
-                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iOS41IiBmaWxsPSJibGFjayIgZmlsbC1vcGFjaXR5PSIwLjI1IiBzdHJva2U9IndoaXRlIi8+CjxjaXJjbGUgY3g9IjkuOTk5MDYiIGN5PSI1Ljc2OTA4IiByPSIxLjE1Mzg1IiBmaWxsPSJ3aGl0ZSIvPgo8cmVjdCB4PSI5LjIzMDk2IiB5PSI4LjQ2MTQzIiB3aWR0aD0iMS41Mzg0NiIgaGVpZ2h0PSI2LjE1Mzg0IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K">
-                            </a>
-                            <div class="c2pa-info-overlay">
-                                <ul class="data">
-                                    <li>
-                                        <div class="label">Current time</div>
-                                        <div class="value" id="seg_st"></div>
-                                    </li>
-                                    <li>
-                                        <div class="label">Claim Generator</div>
-                                        <div class="value" id="manifest1"></div>
-                                    </li>
-                                    <li>
-                                        <div class="label">Signature Issuer</div>
-                                        <div class="value" id="manifest2"></div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <video id="videoPlayer" class="video-js" controls="true"></video>
             </div>
         </div>
         <div class="row">
