@@ -143,7 +143,7 @@ function playbackUpdate(e) {
 
 ### DASH Plugin Implementation
 
-In the natiplugin-style implementation case, the c2pa validation happens on top of the standard DASH player. Nevertheless, the instantion of the player is similar to the native implementation case, and is available in the following code snippet:
+In the plugin-style implementation case, the c2pa validation happens on top of the standard DASH player. Nevertheless, the instantion of the player is similar to the native implementation case, and is available in the following code snippet:
 
 ```javascript
 import {c2pa_init} from './c2pa-plugin.js';
@@ -217,7 +217,7 @@ c2pa_init(dashPlayer, function (e) {
 
 ### C2PA UI Player on Top of Video.js
 
-While developers are free to implement their own UI component, we provide a reference implementation based on top of [Video.js](https://videojs.com/). The UI component is available in the [c2pa-player.js](../c2pa-player.js) and [c2pa-player.css](../c2pa-player.css) files.
+While developers are free to implement their own UI component, we provide a reference implementation on top of [Video.js](https://videojs.com/) to display the C2PA information extracted from the video. The UI component is available in [c2pa-player.js](../c2pa-player.js) and [c2pa-player.css](../c2pa-player.css).
 
 ## License
 
