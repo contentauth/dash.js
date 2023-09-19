@@ -81,7 +81,7 @@ var C2PAMenu = function() {
     };
 }
 
-var C2PAPlayer = function (videoJsPlayer, videoHtml) {
+var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
 
     //Video.js player instance
     let videoPlayer = videoJsPlayer;
@@ -267,9 +267,17 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
             lastSegment.dataset.endTime = seekTime;
         }
         else {
-            //If there was a jump ahead in the timeline, we do not know the validation status
+            let segment;
+            //In the monolithic case, the entire video has already been validated, so when seeking, the validation status
+            //is known for the entire video. Therefore, we create a new segment with the same validation status as the last segment
+            if (isMonolithic) {
+                segment = createTimelineSegment(lastSegment.dataset.endTime, seekTime, lastSegment.dataset.verificationStatus);
+            }
+            //In the streaming case, if there was a jump ahead in the timeline, we do not know the validation status
             //Therefore, we create an unkwown segment and add it to the timeline
-            const segment = createTimelineSegment(lastSegment.dataset.endTime, seekTime, 'unknown');
+            else {
+                segment = createTimelineSegment(lastSegment.dataset.endTime, seekTime, 'unknown');
+            }
 
             c2paControlBar.el().appendChild(segment);
             progressSegments.push(segment);
@@ -343,13 +351,24 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml) {
     let getCompromisedRegions = function () {
 
         let compromisedRegions = [];
-        progressSegments.forEach(segment => {
-            if (segment.dataset.verificationStatus === "false") {
-                const startTime = parseFloat(segment.dataset.startTime);
-                const endTime = parseFloat(segment.dataset.endTime);
-                compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
-            }
-        });
+
+        if (isMonolithic) {
+            //In the monolithic case, the validation status is known for the entire video. If the validation has failed,
+            //the whole video is considered compromised
+            const startTime = 0.0;
+            const endTime = videoPlayer.duration();
+            compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+        }
+        else {
+            //In the streaming case, we get the compromised regions from the segments that have failed the c2pa validation
+            progressSegments.forEach(segment => {
+                if (segment.dataset.verificationStatus === "false") {
+                    const startTime = parseFloat(segment.dataset.startTime);
+                    const endTime = parseFloat(segment.dataset.endTime);
+                    compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+                }
+            });
+        }
 
         return compromisedRegions;
     };

@@ -39,7 +39,8 @@
             /* Create videojs player and c2pa player */
             /* Responsible for UI and playback control */
             var videoJsPlayer = videojs(video, {fluid: true});
-            c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
+            const isMonolithic = true;
+            c2paPlayer = new C2PAPlayer(videoJsPlayer, video, isMonolithic);
             c2paPlayer.initialize();
 
             /* Initialize native video element */
