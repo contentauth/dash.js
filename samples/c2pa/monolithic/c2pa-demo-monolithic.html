@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>C2PA Validation with external dash.js plugin</title>
+    <title>C2PA Validation for Monolithic MP4</title>
 
-    <script src="../../../dist/dash.all.debug.js"></script>
-    
     <!-- Bootstrap core CSS -->
     <link href="../../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="../../lib/main.css" rel="stylesheet">
@@ -27,41 +25,43 @@
 
     <script type="module" class="code">
         /* Import c2pa plugin */
-        import {c2pa_init} from './c2pa-dash-plugin.js';
+        import {c2pa_init} from './c2pa-monolithic-plugin.js';
 
         /* c2pa player instance */
         var c2paPlayer;
-
+        
         function init() {
             var video,
-                dashPlayer,
-                url = "../../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
+                url = "../../microsoft/video_samples/monolithic/provenanceoutput_progressivedownload.mp4";
 
             video = document.querySelector("#videoPlayer");
-            /* Create dashjs player */
-            /* Responsible for streaming video */
-            dashPlayer = dashjs.MediaPlayer().create();
-
+            
             /* Create videojs player and c2pa player */
             /* Responsible for UI and playback control */
-            var videoJsPlayer = videojs('videoPlayer', {fluid: true});
+            var videoJsPlayer = videojs(video, {fluid: true});
             c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
             c2paPlayer.initialize();
 
-            /* Create c2pa plugin*/
-            /* Responsible for executing c2pa validation */
-            c2pa_init(dashPlayer, function (e) {
-                /* Update c2pa player with current c2pa status update */
-                c2paPlayer.playbackUpdate(e.c2pa_status);
-            }).then(() => {
-                dashPlayer.initialize(video, url, true);
+            /* Initialize native video element */
+            video.src = url;
+            video.type = 'video/mp4';
+
+            /* Once video is ready for playback, initialize c2pa plugin,
+            responsible for C2PA validation */
+            video.addEventListener('canplay', function() {
+                c2pa_init(video, playbackUpdate);
             });
+        }
+
+        /* Responsible for updating c2pa player with c2pa information */
+        function playbackUpdate(e) {
+            c2paPlayer.playbackUpdate(e.c2pa_status);
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             init();
         });
-        
+
     </script>
 </head>
 <body>
@@ -76,8 +76,8 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="h-100 p-5 bg-light border rounded-3">
-                    <h3>Extending dash.js w/ C2PA Video Verification</h3>
-                    <p>This sample shows how to extend dash.js with C2PA SDKs to verify video segments, and associated UI to show validation status and C2PA information</p>
+                    <h3>C2PA Video Verification for Monolithic MP4</h3>
+                    <p>This sample shows how to perform C2PA validation for monolithic MP4</p>
                 </div>
             </div>
             <div class="col-md-8 ">
