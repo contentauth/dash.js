@@ -355,9 +355,11 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         if (isMonolithic) {
             //In the monolithic case, the validation status is known for the entire video. If the validation has failed,
             //the whole video is considered compromised
-            const startTime = 0.0;
-            const endTime = videoPlayer.duration();
-            compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+            if (progressSegments.length > 0 && progressSegments[0].dataset.verificationStatus === "false") {
+                const startTime = 0.0;
+                const endTime = videoPlayer.duration();
+                compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+            }
         }
         else {
             //In the streaming case, we get the compromised regions from the segments that have failed the c2pa validation
