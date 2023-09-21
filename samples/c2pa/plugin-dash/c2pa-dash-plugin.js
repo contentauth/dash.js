@@ -3,7 +3,7 @@ import IntervalTree from 'https://cdn.jsdelivr.net/npm/@flatten-js/interval-tree
 import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm'
 
 async function c2pa_init(player, onPlaybackTimeUpdated) {
-    const C2paSupportedMediaTypes = ['video'];
+    const C2paSupportedMediaTypes = ['video', 'audio'];
 
     let tree = {};
     let initFragment = {};
@@ -24,7 +24,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                 let tag = chunk.streamId + '-' + chunk.mediaInfo.type + '-' + chunk.representationId;
 
                 if (chunk.segmentType == 'InitializationSegment') {
-                    initFragment[tag] = new Blob([chunk.bytes], {type: chunk.mediaInfo.mimeType});
+                    initFragment[tag] = new Blob([chunk.bytes], {type: 'video/mp4'});
                     console.log('Got init seg for '+ tag)
                 } else if (!(tag in initFragment)) {
                     console.error('initFragment is null for ' + tag);
@@ -49,16 +49,19 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
     player.on(dashjs.MediaPlayer.events['PLAYBACK_TIME_UPDATED'], function (e) {
         let ret = {
-            'verified': true,
+            'verified': undefined,
             'details': {}
         };
 
+        let isUndefined = false;
         for (const type of C2paSupportedMediaTypes) {
             let repSwitch = player.getDashMetrics().getCurrentRepresentationSwitch(type);
+            if (repSwitch === null)
+                continue;
             let representationId = repSwitch.to;
             let tag = e.streamId + '-' + type + '-' + representationId;
 
-            console.log('Searching verification for ' + tag);
+            console.log('[C2PA] Searching verification for ' + tag);
 
             if (!(tag in tree)) {
                 console.error("cannot find " + tag);
@@ -73,26 +76,36 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
             let segs = tree[tag].search([e.time, e.time + 0.01]);
 
-            if (segs.length != 1)
+            if (segs.length > 1)
                 detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
+            
+            if (segs.length == 0) {
+                detail['error'] = 'No segment found for media type ' + type;
+                isUndefined = true;
+                continue;
+            }
 
             let manifest = segs[0].manifest;
+
+            detail['manifest'] = manifest;
 
             if (manifest.manifestStore == null)
                 detail['error'] = 'null manifestStore';
 
             if (manifest['manifestStore']['validationStatus']?.length === 0) {
                 detail['verified'] = true;
-                detail['manifest'] = manifest;
             } else
                 detail['error'] = 'error code' + manifest.manifestStore.validationStatus[0].code;
 
             ret['details'][type] = detail;
-            ret['verified'] = ret['verified'] && detail['verified'];
+            ret['verified'] = ((ret['verified'] === true || ret['verified'] === undefined) ? true : false) && detail['verified'];
+        }
+
+        if (isUndefined) {
+            ret['verified'] = undefined;
         }
 
         e['c2pa_status'] = ret;
-
         onPlaybackTimeUpdated(e);
     });
 }
