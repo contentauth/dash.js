@@ -72,16 +72,19 @@ function C2paController(_eventBus) {
 
     function getC2paVerificationStatus(time, streamInfo, dashMetrics) {
         let ret = {
-            'verified': true,
+            'verified': undefined,
             'details': {}
         };
 
+        let isUndefined = false;
         for (const type of C2paSupportedMediaTypes) {
             let repSwitch = dashMetrics.getCurrentRepresentationSwitch(type);
+            if (repSwitch === null)
+                continue;
             let representationId = repSwitch.to;
             let tag = streamInfo.id + '-' + type + '-' + representationId;
 
-            console.log('Searching verification for ' + tag);
+            console.log('[C2PA] Searching verification for ' + tag);
 
             if (!(tag in tree))
                 continue
@@ -94,22 +97,33 @@ function C2paController(_eventBus) {
 
             let segs = tree[tag].search([time, time + 0.01]);
 
-            if (segs.length != 1)
+            if (segs.length > 1)
                 detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
 
-            let seg = segs[0];
+            if (segs.length == 0) {
+                detail['error'] = 'No segment found for media type ' + type;
+                isUndefined = true;
+                continue;
+            }
+            
+            let manifest = segs[0].manifest;
 
-            if (seg.manifest.manifestStore == null)
+            detail['manifest'] = manifest;
+
+            if (manifest.manifestStore == null)
                 detail['error'] = 'null manifestStore';
 
-            if (seg['manifest']['manifestStore']['validationStatus']?.length === 0) {
+            if (manifest['manifestStore']['validationStatus']?.length === 0) {
                 detail['verified'] = true;
-                detail['manifest'] = seg['manifest'];
             } else
-                detail['error'] = 'error code' + seg['manifest'].manifestStore.validationStatus[0].code;
+                detail['error'] = 'error code' + manifest.manifestStore.validationStatus[0].code;
 
             ret['details'][type] = detail;
-            ret['verified'] = ret['verified'] && detail['verified'];
+            ret['verified'] = ((ret['verified'] === true || ret['verified'] === undefined) ? true : false) && detail['verified'];
+        }
+
+        if (isUndefined) {
+            ret['verified'] = undefined;
         }
 
         return ret;

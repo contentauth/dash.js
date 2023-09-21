@@ -55,12 +55,14 @@ var C2PAMenu = function() {
 
             const verificationStatus = c2paStatus.verified;
             const manifest = c2paStatus.details.video.manifest;
-    
-            if (itemName == "SIG_ISSUER") {
-                return manifest['manifestStore']['activeManifest']['signatureInfo']['issuer'];
-            }
-            if (itemName == "CLAIM_GENERATOR") {
-                return manifest['manifestStore']['activeManifest']['claimGenerator'];
+
+            if (manifest != null && manifest['manifestStore'] != null) {
+                if (itemName == "SIG_ISSUER") {
+                    return manifest['manifestStore']['activeManifest']['signatureInfo']['issuer'];
+                }
+                if (itemName == "CLAIM_GENERATOR") {
+                    return manifest['manifestStore']['activeManifest']['claimGenerator'];
+                }
             }
             if (itemName == "VALIDATION_STATUS") {
                 switch (verificationStatus) {
@@ -289,7 +291,10 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     let handleC2PAValidation = function (verificationStatusBool, currentTime) {
 
         //Convert verification status to string since this value is saved in the segment dataset
-        let verificationStatus = verificationStatusBool.toString();
+        //If variable is not a boolean, we set the status to unknown
+        let verificationStatus = 'unkown';
+        if (typeof verificationStatusBool === 'boolean')
+            verificationStatus = verificationStatusBool.toString();
 
         //If no segments have been added to the timeline, or if the validation status has changed with respect to the last segment
         //We add a new segment to the timeline
