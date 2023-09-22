@@ -24,8 +24,9 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                 let tag = chunk.streamId + '-' + chunk.mediaInfo.type + '-' + chunk.representationId;
 
                 if (chunk.segmentType == 'InitializationSegment') {
+                    //TODO: mimetype should change based on actual type from chunk
                     initFragment[tag] = new Blob([chunk.bytes], {type: 'video/mp4'});
-                    console.log('Got init seg for '+ tag)
+                    console.log('[C2PA] Got init seg for ' + tag)
                 } else if (!(tag in initFragment)) {
                     console.error('initFragment is null for ' + tag);
                 } else {
@@ -39,7 +40,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                         'manifest': manifest
                     });
 
-                    console.log('C2pa manifest extracted for ' + tag);
+                    console.log('[C2PA] Manifest extracted for ' + tag + ': ', manifest);
                 }
 
                 return Promise.resolve(chunk);
@@ -76,8 +77,11 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
             let segs = tree[tag].search([e.time, e.time + 0.01]);
 
-            if (segs.length > 1)
+            if (segs.length > 1) {
                 detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
+                isUndefined = true;
+                continue;
+            }
             
             if (segs.length == 0) {
                 detail['error'] = 'No segment found for media type ' + type;

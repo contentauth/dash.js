@@ -54,7 +54,12 @@ var C2PAMenu = function() {
         c2paItem: function (itemName, c2paStatus, compromisedRegions = []) {
 
             const verificationStatus = c2paStatus.verified;
-            const manifest = c2paStatus.details.video.manifest;
+            let manifest = null;
+            try {
+                manifest = c2paStatus.details.video.manifest;
+            } catch (error) {
+                console.error('[C2PA] Manifest does not exist');
+            }
 
             if (manifest != null && manifest['manifestStore'] != null) {
                 if (itemName == "SIG_ISSUER") {
@@ -292,7 +297,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
 
         //Convert verification status to string since this value is saved in the segment dataset
         //If variable is not a boolean, we set the status to unknown
-        let verificationStatus = 'unkown';
+        let verificationStatus = 'unknown';
         if (typeof verificationStatusBool === 'boolean')
             verificationStatus = verificationStatusBool.toString();
 
