@@ -60,3 +60,24 @@
     top: 0;
     height: 100%;
 }
+
+.friction-overlay {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    background-color: rgba(160, 157, 157, 0.157);
+    width: 40%;
+    padding: 10px;
+    border-radius: 5px;
+
+    font-family: 'Verdana';
+    font-size: 1em;
+    color: #fff;
+}
+
+.friction-overlay .friction-button {
+    background-color: #007BFF;
+    border-radius: 5px;
+    padding: 5px;
+    float: right;
+}

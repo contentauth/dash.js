@@ -101,6 +101,11 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     let c2paMenu;
     let c2paControlBar;
 
+    //An overlay to be shown to the user in case the initial manifest validation fails
+    //Used to warn the user the content cannot be trusted
+    let frictionOverlay;
+    let isManifestInvalid = false; //TODO: placeholder, this should be set based on info from the c2pa validation
+
     //List of segments to be added to the progress bar, showing the c2pa validation status
     let progressSegments = [];
 
@@ -177,6 +182,48 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         }, 0); //0 indicates that the menu button will be the first item in the control bar
     };
 
+    let initializeFrictionOverlay = function () {
+        //Create the friction overlay container
+        frictionOverlay = document.createElement("div");
+        frictionOverlay.className = "friction-overlay";
+
+        //Create the warnimg message to be shown to the user when initial manifest validation fails
+        let warnMessage = document.createElement("p");
+        warnMessage.textContent = "The information in this video's Content Credentials is no longer trustworthy and the video's history cannot be confirmed.";
+
+        //Create "Watch Anyway" button
+        let watchAnywayBtn = document.createElement("button");
+        watchAnywayBtn.textContent = "Watch Anyway";
+        watchAnywayBtn.classList.add("friction-button");
+
+        //Append the elements to the friction overlay container
+        frictionOverlay.appendChild(warnMessage);
+        frictionOverlay.appendChild(watchAnywayBtn);
+
+        //Hide overlay by default
+        frictionOverlay.style.display = "none";
+
+        //Append the overlay container to the player's container
+        let playerContainer = videoPlayer.el();
+        playerContainer.appendChild(frictionOverlay);
+
+        //The user can click the "Watch Anyway" button to continue watching the video
+        watchAnywayBtn.addEventListener("click", function () {
+            //Close overlay and resume playback
+            frictionOverlay.style.display = "none";
+            playbackStarted = true;
+            videoPlayer.play();
+        });
+    };
+
+    //Display the friction overlay if the initial manifest validation fails
+    let displayFrictionOverlay = function () {
+        if (!playbackStarted) {
+            videoPlayer.pause();
+            frictionOverlay.style.display = "block";
+        }
+    };
+
     let handleOnSeeked = function (time) {
 
         //A seek event is triggered at the beginning of the playbacj, so we ignore it
@@ -238,14 +285,19 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         segment.dataset.endTime = segmentEndTime;
         segment.dataset.verificationStatus = verificationStatus;
 
-        if (verificationStatus == "true") { //c2pa validation passed
-            segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-passed').trim();
-        }
-        else if (verificationStatus == "false") { //c2pa validation failed
+        if (isManifestInvalid) {
             segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-failed').trim();
         }
-        else { //c2pa validation not available or unkwown
-            segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-unknown').trim();
+        else {
+            if (verificationStatus == "true") { //c2pa validation passed
+                segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-passed').trim();
+            }
+            else if (verificationStatus == "false") { //c2pa validation failed
+                segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-failed').trim();
+            }
+            else { //c2pa validation not available or unkwown
+                segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-unknown').trim();
+            }    
         }
 
         return segment;
@@ -414,6 +466,11 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         });
     };
 
+    //Hide the c2pa menu
+    let hideC2PAMenu = function () {
+        c2paMenu.hide();
+    };
+
     //Public API
     return {
 
@@ -423,13 +480,21 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
             //Initialize c2pa timeline and menu
             initializeC2PAControlBar();
             initializeC2PAMenu();
+            //Initialize friction overlay to be displayed if initial manifest validation fails
+            initializeFrictionOverlay();
 
             //Get c2pa menu and control bar elements from html
             c2paMenu = videoPlayer.controlBar.getChild("C2PAMenuButton");
             c2paControlBar = videoPlayer.controlBar.progressControl.seekBar.getChild("C2PALoadProgressBar");
 
             videoPlayer.on('play', function() {
-                playbackStarted = true;
+                if (isManifestInvalid && !playbackStarted) {
+                    console.log("[C2PA] Manifest invalid, displaying friction overlay");
+                    displayFrictionOverlay();
+                }
+                else {
+                    playbackStarted = true;
+                }
             });
 
             videoPlayer.on('seeked', function() {
