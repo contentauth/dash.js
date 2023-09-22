@@ -49,10 +49,13 @@ function C2paController(_eventBus) {
 
         // TODO(hawang) change the mimetype the actual one from the response
         // TODO(hawang) use InitCache created for each media type in BufferController instead of saving here
-        if (e.request.type == 'InitializationSegment') 
+        if (e.request.type == 'InitializationSegment') {
+            //TODO: mimetype should change based on actual type from chunk
             initFragment[tag] = new Blob([e.response], {type: 'video/mp4'});
+            console.log('[C2PA] Got init seg for ' + tag)
+        }
         else if (!(tag in initFragment)) {
-            console.error('initFragment is null');
+            console.error('initFragment is null ' + tag);
         } else {
             c2pa.then(result => {
                 result.readFragment(initFragment[tag], e.response)
@@ -64,7 +67,7 @@ function C2paController(_eventBus) {
                             'type': e.request.segmentType, 
                             'manifest': manifest
                         });
-                        console.log('C2pa manifest extracted for ' + tag + ': ' + manifest);
+                        console.log('[C2PA] Manifest extracted for ' + tag + ': ', manifest);
                     }).catch(error => console.error('Failed to extract C2pa manifest: ' + error));
             });
         }
@@ -97,8 +100,11 @@ function C2paController(_eventBus) {
 
             let segs = tree[tag].search([time, time + 0.01]);
 
-            if (segs.length > 1)
+            if (segs.length > 1) {
                 detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
+                isUndefined = true;
+                continue;
+            }
 
             if (segs.length == 0) {
                 detail['error'] = 'No segment found for media type ' + type;
