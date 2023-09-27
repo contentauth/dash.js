@@ -86,11 +86,18 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
             let segs = tree[tag].search([e.time, e.time + 0.01]);
 
             if (segs.length > 1) {
-                console.info('[C2PA-Test] Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type);
-                detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
-                ret['details'][type] = detail;
-                isUndefined = true;
-                continue;
+                const interval = segs[0].interval;
+                for (let i = 1; i < segs.length; i++) {
+                    if (segs[i].interval == interval) {
+                        isUndefined = true;
+                        break;
+                    }
+                }
+                if (isUndefined) {
+                    console.info('[C2PA] Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type);
+                    detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
+                    ret['details'][type] = detail;
+                    continue;
             }
             
             if (segs.length == 0) {
