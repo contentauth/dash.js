@@ -3,9 +3,14 @@
     --c2pa-passed: rgb(42, 122, 243);
     --c2pa-failed: rgb(203, 111, 14);
     --c2pa-unknown: rgb(172, 172, 172);
+    --background: rgba(0,0,0,.7);
 }
 
+
 /* Default colors for the videojs timeline and tooltip */
+.video-js .vjs-control-bar{
+    background-color: var(--background);
+}
 .video-js .vjs-progress-control {
     color: var(--c2pa-unknown)
 }
@@ -25,6 +30,8 @@
 .vjs-menu-button-popup .vjs-menu .vjs-menu-content {
     font-family: 'Verdana';
     max-height: none;
+    background-color: var(--background);
+    padding: 1.25rem;
 }
 
 /* Style of the c2pa menu items */
@@ -33,20 +40,34 @@
     justify-content: left;
     text-transform: none;
     font-size: 1.2em;
-    border-bottom: 1px solid #ffffff;
-    padding-bottom: 5px;
-    width: 30%;
+    border-bottom: 0.063rem solid #ffffff;
+    padding-bottom: 0.313rem;
+    margin: 0;
+    width: 13.438rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
 }
 .vjs-menu li.vjs-menu-item {
     display: flex;
     justify-content: left;
     text-transform: none;
     font-size: 1em;
-    border-bottom: 1px solid #ffffff;
-    padding-bottom: 5px;
-    width: 30%;
+    border-top: 0.063rem solid #ffffff;
+    padding-top:0.625rem;
+    padding-bottom:0.625rem;
+    width:13.438rem;
     cursor: default;
     white-space: pre-wrap;
+    text-align: left;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+}
+.vjs-menu li.vjs-menu-item:last-child {
+  
+    border-top: none;
+  
 }
 /* Remove hover effect on c2pa menu items */
 .vjs-menu li.vjs-menu-item:hover,
@@ -64,10 +85,10 @@
 .friction-overlay {
     position: absolute;
     bottom: 40px;
-    left: 10px;
+    left: 0.625rem;
     background-color: rgba(160, 157, 157, 0.157);
     width: 40%;
-    padding: 10px;
+    padding: 0.625rem;
     border-radius: 5px;
 
     font-family: 'Verdana';
@@ -80,4 +101,21 @@
     border-radius: 5px;
     padding: 5px;
     float: right;
+}
+
+.itemName{
+    font-weight: 700;
+}
+
+.nextLine{
+    padding-bottom: 0.25rem;
+    display: inline-block;
+}
+
+.btn{
+    width: 100%; 
+    padding: 0.5rem;
+    background:#0265DC !important;
+    border-radius: 18px;
+ 
 }
