@@ -1,5 +1,5 @@
 /**
-    * @module c2pa-player
+    * @module c2pa-menu
     * @param {object=} videoJsPlayer - videojs reference
     * @param {object=} videoHtml - video html element
     */

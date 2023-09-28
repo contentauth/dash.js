@@ -1,6 +1,6 @@
 import IntervalTree from 'https://cdn.jsdelivr.net/npm/@flatten-js/interval-tree@1.0.20/dist/main.esm.js';
 
-import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm'
+import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm';
 
 async function c2pa_init(player, onPlaybackTimeUpdated) {
     const C2paSupportedMediaTypes = ['video', 'audio'];
@@ -13,7 +13,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
         workerSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/c2pa.worker.js',
     });
 
-    player.extend("SegmentResponseModifier", function () {
+    player.extend('SegmentResponseModifier', function () {
         return {
             modifyResponseAsync: async function (chunk) {
                 if (!C2paSupportedMediaTypes.includes(chunk.mediaInfo.type)) {
@@ -65,7 +65,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
             console.log('[C2PA] Searching verification for ' + tag);
 
             if (!(tag in tree)) {
-                console.error("cannot find " + tag);
+                console.error('cannot find ' + tag);
                 continue
             }
 
@@ -114,4 +114,4 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
     });
 }
 
-export {c2pa_init};
+export { c2pa_init };
