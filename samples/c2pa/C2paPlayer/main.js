@@ -3,90 +3,8 @@
     * @param {object=} videoJsPlayer - videojs reference
     * @param {object=} videoHtml - video html element
     */
-
-var C2PAMenu = function() {
-    
-    //Items to show in the c2pa menu
-    const c2paMenuItems = {
-        'SIG_ISSUER': 'Signature Issuer',
-        'CLAIM_GENERATOR': 'Claim Generator',
-        'VALIDATION_STATUS': 'Current Validation Status',
-        'ALERT': 'Alert'
-    };
-
-    const c2paMenuValueToKeyMap = {};
-    for (const key in c2paMenuItems) {
-        c2paMenuValueToKeyMap[c2paMenuItems[key]] = key;
-    }
-    
-    //Delimiter to separate the menu item name from its value
-    const c2paMenuDelimiter = ' : ';
-
-    //Alert message to be shown when the c2pa validation has failed
-    const c2paAlertPrefix = "The region(s) between ";
-    const c2paAlertSuffix = " may have been comprimised";
-
-    //Create an alert message if the c2pa validation has failed
-    let c2paAlertMessage = function (compromisedRegions) {
-        if (compromisedRegions.length > 0) {
-            return c2paAlertPrefix + compromisedRegions.join(', ') + c2paAlertSuffix;
-        }
-        else {
-            return null;
-        }
-    }
-
-    return {
-
-        c2paMenuItems: function () {
-            return c2paMenuItems;
-        },
-
-        c2paMenuDelimiter: function () {
-            return c2paMenuDelimiter;
-        },
-
-        c2paMenuValueToKeyMap: function (itemValue) {
-            return c2paMenuValueToKeyMap[itemValue];
-        },
-
-        //Functions to access the c2pa menu items from the c2pa manifest
-        c2paItem: function (itemName, c2paStatus, compromisedRegions = []) {
-
-            const verificationStatus = c2paStatus.verified;
-            let manifest = null;
-            try {
-                manifest = c2paStatus.details.video.manifest;
-            } catch (error) {
-                console.error('[C2PA] Manifest does not exist');
-            }
-
-            if (manifest != null && manifest['manifestStore'] != null) {
-                if (itemName == "SIG_ISSUER") {
-                    return manifest['manifestStore']['activeManifest']['signatureInfo']['issuer'];
-                }
-                if (itemName == "CLAIM_GENERATOR") {
-                    return manifest['manifestStore']['activeManifest']['claimGenerator'];
-                }
-            }
-            if (itemName == "VALIDATION_STATUS") {
-                switch (verificationStatus) {
-                    case true:
-                        return "Passed";
-                    case false:
-                        return "Failed";
-                    default:
-                        return "Unknown";
-                }
-            }
-            if (itemName == "ALERT") {
-                return c2paAlertMessage(compromisedRegions);
-            }
-    
-            return null;
-        },
-    };
-}
+import { C2PAMenu } from './C2PaMenu/C2paMenu';
+import { initializeC2PAMenu } from './C2PaMenu/InitializeMenu';
 
 var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
 
@@ -122,7 +40,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     let initializeC2PAControlBar = function () {
 
         //The playback progress bar from video-js is extended to support c2pa validation
-        const LoadProgressBar = videojs.getComponent("LoadProgressBar");
+        const LoadProgressBar = videojs.getComponent('LoadProgressBar');
             
         //The update event is overriden to support c2pa validation
         class C2PALoadProgressBar extends LoadProgressBar {
@@ -133,84 +51,43 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         videoPlayer.controlBar.progressControl.seekBar.addChild('C2PALoadProgressBar');
 
         //The progress timeline is managed directly, so we set this to transparent
-        const c2paTimeline = videoPlayer.controlBar.progressControl.seekBar.getChild("C2PALoadProgressBar");
+        const c2paTimeline = videoPlayer.controlBar.progressControl.seekBar.getChild('C2PALoadProgressBar');
         c2paTimeline.el().style.width = '100%';
         c2paTimeline.el().style.backgroundColor = 'transparent';
 
     };
 
-    let initializeC2PAMenu = function () {
-
-        const MenuButton = videojs.getComponent("MenuButton");
-        const MenuItem = videojs.getComponent("MenuItem");
-
-        class C2PAMenuButton extends MenuButton {
-            createItems() {
-                // Must return an array of `MenuItem`s
-                // Options passed in `addChild` are available at `this.options_`
-                return this.options_.myItems.map((i) => {
-                    let item = new MenuItem(this.player_, { label: i.name});
-                    item.handleClick = function () {
-                        //No click behavior implemented for now
-                        return;
-                    };
-                    return item;
-                });
-            }
   
-            buildCSSClass() {
-                return `vjs-chapters-button`; //Add icon to menu
-            }
-        }
-
-        // Register as a component, so it can be added
-        videojs.registerComponent("C2PAMenuButton", C2PAMenuButton);
-
-        //Add items to c2pa menu
-        let c2pAItems = [];
-        const menuItems = c2paMenuInstance.c2paMenuItems();
-        Object.keys(menuItems).forEach(key => {
-            const value = menuItems[key];
-            c2pAItems.push({ name: value + c2paMenuInstance.c2paMenuDelimiter() + "Not Available" });
-        });
-
-        // Use `addChild` to add an instance of the new component, with options
-        videoPlayer.controlBar.addChild("C2PAMenuButton", {
-            controlText: "Content Credentials",
-            title: "Content Credentials",
-            myItems: c2pAItems,
-        }, 0); //0 indicates that the menu button will be the first item in the control bar
-    };
 
     let initializeFrictionOverlay = function () {
         //Create the friction overlay container
-        frictionOverlay = document.createElement("div");
-        frictionOverlay.className = "friction-overlay";
+        frictionOverlay = document.createElement('div');
+        frictionOverlay.className = 'friction-overlay';
 
         //Create the warnimg message to be shown to the user when initial manifest validation fails
-        let warnMessage = document.createElement("p");
-        warnMessage.textContent = "The information in this video's Content Credentials is no longer trustworthy and the video's history cannot be confirmed.";
+        let warnMessage = document.createElement('p');
+        warnMessage.textContent = 'The information in this video\'s Content Credentials is no longer trustworthy and the video\'s history cannot be confirmed.';
 
         //Create "Watch Anyway" button
-        let watchAnywayBtn = document.createElement("button");
-        watchAnywayBtn.textContent = "Watch Anyway";
-        watchAnywayBtn.classList.add("friction-button");
+        let watchAnywayBtn = document.createElement('button');
+        watchAnywayBtn.textContent = 'Watch Anyway';
+        watchAnywayBtn.classList.add('friction-button');
 
         //Append the elements to the friction overlay container
         frictionOverlay.appendChild(warnMessage);
         frictionOverlay.appendChild(watchAnywayBtn);
 
         //Hide overlay by default
-        frictionOverlay.style.display = "none";
+        frictionOverlay.style.display = 'none';
 
         //Append the overlay container to the player's container
         let playerContainer = videoPlayer.el();
         playerContainer.appendChild(frictionOverlay);
 
         //The user can click the "Watch Anyway" button to continue watching the video
-        watchAnywayBtn.addEventListener("click", function () {
+        watchAnywayBtn.addEventListener('click', function () {
             //Close overlay and resume playback
-            frictionOverlay.style.display = "none";
+            frictionOverlay.style.display = 'none';
             playbackStarted = true;
             videoPlayer.play();
         });
@@ -220,7 +97,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     let displayFrictionOverlay = function () {
         if (!playbackStarted) {
             videoPlayer.pause();
-            frictionOverlay.style.display = "block";
+            frictionOverlay.style.display = 'block';
         }
     };
 
@@ -236,11 +113,11 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
 
     let handleOnSeeking = function (time) {
 
-        console.log("[C2PA] Player seeking: ", time);
+        console.log('[C2PA] Player seeking: ', time);
         seeking = true;
 
         if (time === 0) {
-            console.log("[C2PA] Player resetting");
+            console.log('[C2PA] Player resetting');
             progressSegments.forEach(segment => {
                 segment.remove();
             });
@@ -265,7 +142,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     //Adjust c2pa menu size with respect to the player size
     let adjustC2PAMenu = function () {
 
-        const menuContent = c2paMenu.el().querySelector(".vjs-menu-button-popup .vjs-menu .vjs-menu-content");
+        const menuContent = c2paMenu.el().querySelector('.vjs-menu-button-popup .vjs-menu .vjs-menu-content');
 
         const playerWidth = videoElement.offsetWidth;
         const playerHeight = videoElement.offsetHeight - c2paMenuHeightOffset;
@@ -289,10 +166,10 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
             segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-failed').trim();
         }
         else {
-            if (verificationStatus == "true") { //c2pa validation passed
+            if (verificationStatus == 'true') { //c2pa validation passed
                 segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-passed').trim();
             }
-            else if (verificationStatus == "false") { //c2pa validation failed
+            else if (verificationStatus == 'false') { //c2pa validation failed
                 segment.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--c2pa-failed').trim();
             }
             else { //c2pa validation not available or unkwown
@@ -305,7 +182,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
 
     let handleSeekC2PATimeline = function (seekTime) {
         
-        console.log("[C2PA] Handle seek to: ", seekTime);
+        console.log('[C2PA] Handle seek to: ', seekTime);
 
         //Remove segments that are not active anymore
         progressSegments = progressSegments.filter(segment => {
@@ -318,7 +195,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
             }
   
             return isSegmentActive;
-          });
+        });
 
         const lastSegment = progressSegments[progressSegments.length - 1];
         if (lastSegment.dataset.endTime > seekTime) {
@@ -357,7 +234,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         //We add a new segment to the timeline
         if (progressSegments.length === 0 || progressSegments[progressSegments.length - 1].dataset.verificationStatus != verificationStatus) {
 
-            console.log("[C2PA] New validation status: ", verificationStatus);
+            console.log('[C2PA] New validation status: ', verificationStatus);
 
             //Update the end time of the last segment
             if (progressSegments.length > 0) {
@@ -374,7 +251,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
 
     let updateC2PATimeline = function (currentTime) {
 
-        console.log("[C2PA] Updating play bar");
+        console.log('[C2PA] Updating play bar');
 
         let numSegments = progressSegments.length;
         const lastSegment = progressSegments[numSegments - 1];
@@ -399,13 +276,13 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
                 segmentProgressPercentage = (segmentEndTime / videoPlayer.duration()) * 100; //Current time is after the segment end time
             }
 
-            console.log("[C2PA] Segment progress percentage: ", segmentProgressPercentage);
+            console.log('[C2PA] Segment progress percentage: ', segmentProgressPercentage);
             segment.style.width = segmentProgressPercentage + '%';
 
             //Set the z-index so that segments appear in order of creation
             segment.style.zIndex = numSegments;
             numSegments--;
-            console.log("[C2PA] ----");
+            console.log('[C2PA] ----');
         });
     };
 
@@ -417,19 +294,19 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
         if (isMonolithic) {
             //In the monolithic case, the validation status is known for the entire video. If the validation has failed,
             //the whole video is considered compromised
-            if (progressSegments.length > 0 && progressSegments[0].dataset.verificationStatus === "false") {
+            if (progressSegments.length > 0 && progressSegments[0].dataset.verificationStatus === 'false') {
                 const startTime = 0.0;
                 const endTime = videoPlayer.duration();
-                compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+                compromisedRegions.push(formatTime(startTime) + '-' + formatTime(endTime));
             }
         }
         else {
             //In the streaming case, we get the compromised regions from the segments that have failed the c2pa validation
             progressSegments.forEach(segment => {
-                if (segment.dataset.verificationStatus === "false") {
+                if (segment.dataset.verificationStatus === 'false') {
                     const startTime = parseFloat(segment.dataset.startTime);
                     const endTime = parseFloat(segment.dataset.endTime);
-                    compromisedRegions.push(formatTime(startTime) + "-" + formatTime(endTime));
+                    compromisedRegions.push(formatTime(startTime) + '-' + formatTime(endTime));
                 }
             });
         }
@@ -441,7 +318,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     let updateC2PAMenu = function (c2paStatus) {
 
         //Get all the items in the c2pa menu
-        const c2paItems = c2paMenu.el().querySelectorAll(".vjs-menu-item");
+        const c2paItems = c2paMenu.el().querySelectorAll('.vjs-menu-item');
         const compromisedRegions = getCompromisedRegions();
 
         c2paItems.forEach(c2paItem => {
@@ -454,14 +331,14 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
             //And based on that key, we get the corresponding value from the c2pa manifest
             const c2paItemKey = c2paMenuInstance.c2paMenuValueToKeyMap(c2paItemName)
             const c2paItemValue = c2paMenuInstance.c2paItem(c2paItemKey, c2paStatus, compromisedRegions);
-            console.log("[C2PA] Menu item: ", c2paItemName, c2paItemKey, c2paItemValue)
+            console.log('[C2PA] Menu item: ', c2paItemName, c2paItemKey, c2paItemValue)
 
             if (c2paItemValue != null) { //If the value is not null, we update the menu item text and show it
                 c2paItem.innerText = c2paItemName + c2paMenuInstance.c2paMenuDelimiter() + c2paItemValue;
-                c2paItem.style.display = "block";
+                c2paItem.style.display = 'block';
             }
             else { //If the value is null, we hide the menu item
-                c2paItem.style.display = "none";
+                c2paItem.style.display = 'none';
             }
         });
     };
@@ -475,21 +352,21 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
     return {
 
         initialize: function () {
-            console.log("[C2PA] Initializing C2PAPlayer");
+            console.log('[C2PA] Initializing C2PAPlayer');
 
             //Initialize c2pa timeline and menu
             initializeC2PAControlBar();
-            initializeC2PAMenu();
+            initializeC2PAMenu(c2paMenuInstance, videoPlayer);
             //Initialize friction overlay to be displayed if initial manifest validation fails
             initializeFrictionOverlay();
 
             //Get c2pa menu and control bar elements from html
-            c2paMenu = videoPlayer.controlBar.getChild("C2PAMenuButton");
-            c2paControlBar = videoPlayer.controlBar.progressControl.seekBar.getChild("C2PALoadProgressBar");
+            c2paMenu = videoPlayer.controlBar.getChild('C2PAMenuButton');
+            c2paControlBar = videoPlayer.controlBar.progressControl.seekBar.getChild('C2PALoadProgressBar');
 
             videoPlayer.on('play', function() {
                 if (isManifestInvalid && !playbackStarted) {
-                    console.log("[C2PA] Manifest invalid, displaying friction overlay");
+                    console.log('[C2PA] Manifest invalid, displaying friction overlay');
                     displayFrictionOverlay();
                 }
                 else {
@@ -512,7 +389,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
             }, 500);
             adjustC2PAMenu();
 
-            console.log("[C2PA] Initialization complete");
+            console.log('[C2PA] Initialization complete');
         },
 
         //Playback update with updates on c2pa manifest and validation
@@ -523,7 +400,7 @@ var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false) {
             //We only update the c2pa timeline if the playback is not seeking and the playback time has increased
             if (!seeking && (currentTime >= lastPlaybackTime) && (currentTime - lastPlaybackTime < minSeekTime)) {
 
-                console.log("[C2PA] Validation update: ", lastPlaybackTime, currentTime);
+                console.log('[C2PA] Validation update: ', lastPlaybackTime, currentTime);
 
                 //Creates new c2pa progress segment to be added to the progress bar
                 handleC2PAValidation(c2paStatus.verified, currentTime);
