@@ -93,7 +93,7 @@ Next, include the JavaScript librarires and CSS files for `video.js` and `c2pa-p
 
 ### DASH-native implementation
 
-With the native implementation, C2PA validation is integrated into the DASH player codebase. Once the page's HTML content is loaded, the `init()` function instatiates the player. The `c2paPlayer` instance is the bridge between the DASH player and the UI component. 
+With the native implementation, C2PA validation is integrated into the DASH player codebase. Once the page's HTML content is loaded, the `init()` function instantiates the player. The `c2paPlayer` instance is the bridge between the DASH player and the UI component. 
 
 Here is the example code from [`c2pa-demo-native.html`](./native-dash/c2pa-demo-native.html):
 
@@ -220,19 +220,19 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 ```
 
-We first important the library responsible for the C2PA validation:
+First, this line imports the library responsible for the C2PA validation:
 
 ```javascript
 import {c2pa_init} from './c2pa-plugin.js';
 ```
 
-Next, we create the DASH player (in this case, a standard DASH player):
+Next, this line creates the DASH player (in this case, a standard DASH player):
 
 ```javascript
 var dashPlayer = dashjs.MediaPlayer().create();
 ```
 
-Similarly to the native implementation case, we create the `video.js` player and the C2PA player, responsible for the UI component:
+Similarly to the native implementation case, these lines create the `video.js` player and the C2PA player, responsible for the UI component:
 
 ```javascript
 var videoJsPlayer = videojs('videoPlayer', {fluid: true});
@@ -240,7 +240,7 @@ c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
 c2paPlayer.initialize();
 ```
 
-Finally, we initialize the C2PA plugin and call the `playbackUpdate` method from the `c2paPlayer` instance to update the UI with the information contained in the `c2pa_status` field:
+Finally, these lines initialize the C2PA plugin and call the `playbackUpdate` method from the `c2paPlayer` instance to update the UI with the information contained in the `c2pa_status` field:
 
 ```javascript
 c2pa_init(dashPlayer, function (e) {
@@ -251,11 +251,11 @@ c2pa_init(dashPlayer, function (e) {
 });
 ```
 
-In the above exammple, `e` is the event object trigger by the C2PA library, which contains the C2PA information. Please note that native and plugin-style implementations share the same structure of the `c2pa_status` field.
+In the above example, `e` is the event object trigger by the C2PA library, which contains the C2PA information. Please note that native and plugin-style implementations share the same structure of the `c2pa_status` field.
 
 ### C2PA UI player on top of Video.js
 
-While developers are free to implement their own UI component, we provide a reference implementation on top of [Video.js](https://videojs.com/) to display the C2PA information extracted from the video. The UI component is available in [c2pa-player.js](../c2pa-player.js) and [c2pa-player.css](../c2pa-player.css).
+While developers are free to implement their own UI component, the files [c2pa-player.js](c2pa-player.js) and [c2pa-player.css](c2pa-player.css) provide a simple reference implementation using [Video.js](https://videojs.com/).
 
 ## License
 
