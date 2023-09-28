@@ -826,6 +826,16 @@
                     "Audio",
                     "C2PA"
                 ]
+            },
+            {
+                "title": "C2PA Validation for monolithic (non-streaming) video",
+                "description": "This example shows how to use C2PA validation for monolithic (non-streaming) MP4 video.",
+                "href": "c2pa/monolithic/c2pa-demo-monolithic.html",
+                "labels": [
+                    "Video",
+                    "Audio",
+                    "C2PA"
+                ]
             }
         ]
     }
