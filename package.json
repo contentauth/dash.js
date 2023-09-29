@@ -83,5 +83,10 @@
         "dist",
         "docs/jsdoc",
         "contrib/akamai"
-    ]
+    ],
+    "overrides": {
+        "c2pa": {
+          "@contentauth/toolkit": "https://cc-assets.netlify.app/video/contentauth-toolkit-0.10.2.tgz"
+        }
+    }
 }
