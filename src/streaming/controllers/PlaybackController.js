@@ -661,15 +661,11 @@ function PlaybackController() {
 
             if (streamController) {
                 if (streamController.getC2pa() !== null) {
-                    let vs = streamController.getC2pa().getC2paVerificationStatus(getTime(), streamInfo, dashMetrics);
+                    let vs = streamController.getC2pa().getC2paVerificationStatus(getTime(), streamInfo);
 
                     e['c2pa_status'] = vs;
                 }
             }
-
-            // TODO(hawang) remove debug info
-            console.log('Playtime changed ');
-            console.log(e);
 
             eventBus.trigger(Events.PLAYBACK_TIME_UPDATED, e);
         }
