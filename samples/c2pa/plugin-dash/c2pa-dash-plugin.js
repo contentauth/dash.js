@@ -18,6 +18,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
     //which are notified with 1 frame delay compared to playback
     let verificationTime = null; 
 
+    //TODO Use latest c2pa sdk - current one may not work with newly generated assets
     const c2pa = await createC2pa({
         wasmSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/assets/wasm/toolkit_bg.wasm',
         workerSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/c2pa.worker.js',
