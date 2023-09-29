@@ -1,5 +1,6 @@
 import IntervalTree from 'https://cdn.jsdelivr.net/npm/@flatten-js/interval-tree@1.0.20/dist/main.esm.js';
 
+//TODO Use latest c2pa sdk - current one may not work with newly generated assets
 import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm';
 
 async function c2pa_init(player, onPlaybackTimeUpdated) {
