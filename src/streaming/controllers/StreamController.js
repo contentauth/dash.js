@@ -122,10 +122,10 @@ function StreamController() {
         registerEvents();
     }
 
-    function setC2pa(enableC2pa) {
+    function setC2pa(enableC2pa, getCurrentTrackFor) {
         if (enableC2pa) {
             console.log('enabling C2PA');
-            c2pa = C2paController(eventBus);
+            c2pa = C2paController(eventBus, getCurrentTrackFor);
         } else 
             c2pa = null;
     }

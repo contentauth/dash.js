@@ -6,14 +6,17 @@ import workerSrc from 'c2pa/dist/c2pa.worker.js?file';
 
 import IntervalTree from '@flatten-js/interval-tree';
 
-function C2paController(_eventBus) {
+function C2paController(_eventBus, _getCurrentTrackFor) {
     const eventBus = _eventBus;
+    const getCurrentTrackFor = _getCurrentTrackFor;
 
     let instance,
         c2pa,
         tree,
         initFragment,
-        C2paSupportedMediaTypes;
+        C2paSupportedMediaTypes,
+        currentQuality,
+        verificationTime;
 
     function setup() {
         c2pa = new Promise((resolve, reject) => {
@@ -23,17 +26,25 @@ function C2paController(_eventBus) {
             }).then(result => {
                 resolve(result);
             }).catch(error => {
-                console.error('Failed to init c2pa: ' + error);
+                console.error('[C2PA] Failed to init c2pa: ' + error);
                 reject(error);
             });
         });
 
         eventBus.on(MediaPlayerEvents.FRAGMENT_LOADING_COMPLETED, onFragmentReadyForC2pa, instance);
+        eventBus.on(MediaPlayerEvents.QUALITY_CHANGE_RENDERED, onVideoQualityChanged, instance);
 
         tree = {};
         initFragment = {};
 
         C2paSupportedMediaTypes = ['video', 'audio'];
+
+        currentQuality = {};
+        for (const type of C2paSupportedMediaTypes) {
+            currentQuality[type] = null;
+        }
+
+        verificationTime = null;
     }
 
     function onFragmentReadyForC2pa(e) {
@@ -41,7 +52,7 @@ function C2paController(_eventBus) {
             return;
 
         if (!C2paSupportedMediaTypes.includes(e.request.mediaType)) {
-            console.log('Unsupported C2PA media type ' + e.request.mediaType);
+            console.log('[C2PA] Unsupported C2PA media type ' + e.request.mediaType);
             return;
         }
 
@@ -55,7 +66,7 @@ function C2paController(_eventBus) {
             console.log('[C2PA] Got init seg for ' + tag)
         }
         else if (!(tag in initFragment)) {
-            console.error('initFragment is null ' + tag);
+            console.error('[C2PA] initFragment is null ' + tag);
         } else {
             c2pa.then(result => {
                 result.readFragment(initFragment[tag], e.response)
@@ -63,17 +74,37 @@ function C2paController(_eventBus) {
                         if (!(tag in tree))
                             tree[tag] = new IntervalTree();
 
-                        tree[tag].insert([e.request.startTime, e.request.startTime + e.request.duration], {
-                            'type': e.request.segmentType, 
-                            'manifest': manifest
+                        const interval = [e.request.startTime, e.request.startTime + e.request.duration];
+                        const c2paInfo = { 'type': e.request.segmentType, 
+                            'manifest': manifest,
+                            'interval': [e.request.startTime, e.request.startTime + e.request.duration]
+                        };
+
+                        tree[tag].search(interval).forEach((seg) => {
+                            if (seg.interval[0] == interval[0] && seg.interval[1] == interval[1]) {
+                                console.info('[C2PA] Segment already exists in tree, removing', interval);
+                                tree[tag].remove(interval, seg);
+                            }
                         });
-                        console.log('[C2PA] Manifest extracted for ' + tag + ': ', manifest);
-                    }).catch(error => console.error('Failed to extract C2pa manifest: ' + error));
+
+                        tree[tag].insert(interval, c2paInfo);
+
+                        if (currentQuality[e.request.segmentType] === null) {
+                            currentQuality[e.request.segmentType] = e.request.representationId;
+                        }
+
+                        console.log('[C2PA] Completed verification for ' + tag, e.request.startTime, e.request.startTime + e.request.duration, manifest);
+                    }).catch(error => console.error('[C2PA] Failed to extract C2pa manifest: ' + error));
             });
         }
     }
 
-    function getC2paVerificationStatus(time, streamInfo, dashMetrics) {
+    function onVideoQualityChanged(e) {
+        console.log('[C2PA] Video quality changed for type ' + e.mediaType, getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id);
+        currentQuality[e.mediaType] = getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id;
+    }
+
+    function getC2paVerificationStatus(time, streamInfo) {
         let ret = {
             'verified': undefined,
             'details': {}
@@ -81,16 +112,18 @@ function C2paController(_eventBus) {
 
         let isUndefined = false;
         for (const type of C2paSupportedMediaTypes) {
-            let repSwitch = dashMetrics.getCurrentRepresentationSwitch(type);
-            if (repSwitch === null)
+            if (currentQuality[type] === null || verificationTime === null)
                 continue;
-            let representationId = repSwitch.to;
+
+            let representationId = currentQuality[type];
             let tag = streamInfo.id + '-' + type + '-' + representationId;
 
-            console.log('[C2PA] Searching verification for ' + tag);
+            console.log('[C2PA] Searching verification for ' + tag + ' at time ' + verificationTime);
 
-            if (!(tag in tree))
+            if (!(tag in tree)) {
+                console.error('[C2PA] Cannot find ' + tag);
                 continue
+            }
 
             let detail = {
                 'verified': false,
@@ -98,16 +131,28 @@ function C2paController(_eventBus) {
                 'error': null,
             }
 
-            let segs = tree[tag].search([time, time + 0.01]);
+            let segs = tree[tag].search([verificationTime, verificationTime + 0.01]);
 
             if (segs.length > 1) {
-                detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
-                isUndefined = true;
-                continue;
+                const interval = segs[0].interval;
+                for (let i = 1; i < segs.length; i++) {
+                    if (segs[i].interval == interval) {
+                        isUndefined = true;
+                        break;
+                    }
+                }
+                if (isUndefined) {
+                    console.info('[C2PA] Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type);
+                    detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
+                    ret['details'][type] = detail;
+                    continue;
+                }
             }
 
             if (segs.length == 0) {
+                console.info('[C2PA] No segment found for media type ' + type);
                 detail['error'] = 'No segment found for media type ' + type;
+                ret['details'][type] = detail;
                 isUndefined = true;
                 continue;
             }
@@ -131,6 +176,9 @@ function C2paController(_eventBus) {
         if (isUndefined) {
             ret['verified'] = undefined;
         }
+
+        console.log('[C2PA] Verification result: ', ret);
+        verificationTime = time;
 
         return ret;
     }

@@ -8,6 +8,15 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
     let tree = {};
     let initFragment = {};
 
+    let currentQuality = {};
+    for (const type of C2paSupportedMediaTypes) {
+        currentQuality[type] = null;
+    }
+
+    //We delay the segment verification by 1 frame to keep into account video quality swtiches,
+    //which are notified with 1 frame delay compared to playback
+    let verificationTime = null; 
+
     const c2pa = await createC2pa({
         wasmSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/assets/wasm/toolkit_bg.wasm',
         workerSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/c2pa.worker.js',
@@ -22,6 +31,8 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                 }
 
                 let tag = chunk.streamId + '-' + chunk.mediaInfo.type + '-' + chunk.representationId;
+
+                console.log('[C2PA] Processing verification for ' + tag, chunk.start, chunk.end);
 
                 if (chunk.segmentType == 'InitializationSegment') {
                     //TODO: mimetype should change based on actual type from chunk
@@ -49,11 +60,22 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                     });
 
                     tree[tag].insert(interval, c2paInfo);
+
+                    if (currentQuality[chunk.mediaInfo.type] === null) {
+                        currentQuality[chunk.mediaInfo.type] = chunk.representationId;
+                    }
+
+                    console.log('[C2PA] Completed verification for ' + tag, chunk.start, chunk.end, manifest);
                 }
 
                 return Promise.resolve(chunk);
             }
         };
+    });
+
+    player.on(dashjs.MediaPlayer.events['QUALITY_CHANGE_RENDERED'], function (e) {
+        console.log('[C2PA] Video quality changed for type ' + e.mediaType, player.getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id);
+        currentQuality[e.mediaType] = player.getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id;
     });
 
     player.on(dashjs.MediaPlayer.events['PLAYBACK_TIME_UPDATED'], function (e) {
@@ -64,13 +86,13 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
         let isUndefined = false;
         for (const type of C2paSupportedMediaTypes) {
-            let repSwitch = player.getDashMetrics().getCurrentRepresentationSwitch(type);
-            if (repSwitch === null)
+            if (currentQuality[type] === null || verificationTime === null)
                 continue;
-            let representationId = repSwitch.to;
+
+            let representationId = currentQuality[type];
             let tag = e.streamId + '-' + type + '-' + representationId;
 
-            console.log('[C2PA] Searching verification for ' + tag + 'at time ' + e.time);
+            console.log('[C2PA] Searching verification for ' + tag + ' at time ' + verificationTime);
 
             if (!(tag in tree)) {
                 console.error("[C2PA] Cannot find " + tag);
@@ -83,7 +105,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                 'error': null,
             };
 
-            let segs = tree[tag].search([e.time, e.time + 0.01]);
+            let segs = tree[tag].search([verificationTime, verificationTime + 0.01]);
 
             if (segs.length > 1) {
                 const interval = segs[0].interval;
@@ -98,9 +120,11 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                     detail['error'] = 'Retrieved unexpected number of segments: ' + segs.length + ' for media type ' + type;
                     ret['details'][type] = detail;
                     continue;
+                }
             }
             
             if (segs.length == 0) {
+                console.info('[C2PA] No segment found for media type ' + type);
                 detail['error'] = 'No segment found for media type ' + type;
                 ret['details'][type] = detail;
                 isUndefined = true;
@@ -131,6 +155,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
         e['c2pa_status'] = ret;
         onPlaybackTimeUpdated(e);
+        verificationTime = e.time;
     });
 }
 

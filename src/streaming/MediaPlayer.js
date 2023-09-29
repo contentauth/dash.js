@@ -422,7 +422,7 @@ function MediaPlayer() {
         }
 
         console.log('setting c2pa to be: ' + enableC2pa);
-        streamController.setC2pa(enableC2pa);
+        streamController.setC2pa(enableC2pa, getCurrentTrackFor);
 
         logger.info('[dash.js ' + getVersion() + '] ' + 'MediaPlayer has been initialized');
     }
