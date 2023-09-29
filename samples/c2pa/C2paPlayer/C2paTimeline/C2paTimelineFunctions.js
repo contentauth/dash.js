@@ -1,9 +1,3 @@
-/**
- * @module timeline
- * @param {object=} videoJsPlayer - videojs reference
- * @param {object=} videoHtml - video html element
- */
-
 //List of segments to be added to the progress bar, showing the c2pa validation status
 let progressSegments = [];
 
