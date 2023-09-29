@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ISOBaseMediaFileTrace>
+<!--MP4Box dump trace-->
+<IsoMediaFile xmlns="urn:mpeg:isobmff:schema:file:2016" Name="provenancevideooutput_dash1.m4s">
+<SegmentTypeBox Size="24" Type="styp" Specification="p12" Container="file" MajorBrand="msdh" MinorVersion="0">
+<BrandEntry AlternateBrand="msdh"/>
+<BrandEntry AlternateBrand="msix"/>
+</SegmentTypeBox>
+<SegmentIndexBox Size="44" Type="sidx" Version="0" Flags="0" Specification="p12" Container="file" reference_ID="1" timescale="15360" earliest_presentation_time="1024" first_offset="0">
+<Reference type="0" size="70902" duration="26624" startsWithSAP="1" SAP_type="1" SAPDeltaTime="0"/>
+</SegmentIndexBox>
+<UUIDBox Size="141" Type="uuid" UUID="{D8FEC3D6-1B0E483C-92975828-877EC481}" Specification="unknown" Container="unknown" >
+</UUIDBox>
+<MovieFragmentBox Size="512" Type="moof" Specification="p12" Container="file" TrackFragments="1">
+<MovieFragmentHeaderBox Size="16" Type="mfhd" Version="0" Flags="0" Specification="p12" Container="moof" FragmentSequenceNumber="1">
+</MovieFragmentHeaderBox>
+<TrackFragmentBox Size="488" Type="traf" Specification="p12" Container="moof" >
+<TrackFragmentHeaderBox Size="24" Type="tfhd" Version="0" Flags="131112" Specification="p12" Container="traf" TrackID="1" BaseDataOffset="moof" SampleDuration="512" SamplePadding="0" Sync="0" DegradationPriority="0" IsLeading="0" DependsOn="1" IsDependedOn="0" HasRedundancy="0">
+</TrackFragmentHeaderBox>
+<TrackFragmentBaseMediaDecodeTimeBox Size="16" Type="tfdt" Version="0" Flags="0" Specification="p12" Container="traf" baseMediaDecodeTime="0">
+</TrackFragmentBaseMediaDecodeTimeBox>
+<TrackRunBox Size="440" Type="trun" Version="0" Flags="2565" Specification="p12" Container="traf" SampleCount="52" DataOffset="520">
+<FirstSampleFlags IsLeading="0" SampleDependsOn="0" SampleIsDependedOn="0" SampleHasRedundancy="0" SamplePadding="0" SampleSync="1" SampleDegradationPriority="0"/>
+<TrackRunEntry Size="23764" CTSOffset="1024"/>
+<TrackRunEntry Size="1962" CTSOffset="2560"/>
+<TrackRunEntry Size="468" CTSOffset="1024"/>
+<TrackRunEntry Size="159" CTSOffset="0"/>
+<TrackRunEntry Size="339" CTSOffset="512"/>
+<TrackRunEntry Size="2469" CTSOffset="2048"/>
+<TrackRunEntry Size="416" CTSOffset="512"/>
+<TrackRunEntry Size="289" CTSOffset="512"/>
+<TrackRunEntry Size="2404" CTSOffset="2560"/>
+<TrackRunEntry Size="388" CTSOffset="1024"/>
+<TrackRunEntry Size="211" CTSOffset="0"/>
+<TrackRunEntry Size="224" CTSOffset="512"/>
+<TrackRunEntry Size="1941" CTSOffset="2560"/>
+<TrackRunEntry Size="394" CTSOffset="1024"/>
+<TrackRunEntry Size="144" CTSOffset="0"/>
+<TrackRunEntry Size="242" CTSOffset="512"/>
+<TrackRunEntry Size="1842" CTSOffset="2560"/>
+<TrackRunEntry Size="408" CTSOffset="1024"/>
+<TrackRunEntry Size="141" CTSOffset="0"/>
+<TrackRunEntry Size="189" CTSOffset="512"/>
+<TrackRunEntry Size="673" CTSOffset="2560"/>
+<TrackRunEntry Size="184" CTSOffset="1024"/>
+<TrackRunEntry Size="180" CTSOffset="0"/>
+<TrackRunEntry Size="109" CTSOffset="512"/>
+<TrackRunEntry Size="1135" CTSOffset="2560"/>
+<TrackRunEntry Size="158" CTSOffset="1024"/>
+<TrackRunEntry Size="80" CTSOffset="0"/>
+<TrackRunEntry Size="96" CTSOffset="512"/>
+<TrackRunEntry Size="1460" CTSOffset="1536"/>
+<TrackRunEntry Size="112" CTSOffset="512"/>
+<TrackRunEntry Size="1585" CTSOffset="1536"/>
+<TrackRunEntry Size="175" CTSOffset="512"/>
+<TrackRunEntry Size="2352" CTSOffset="2560"/>
+<TrackRunEntry Size="256" CTSOffset="1024"/>
+<TrackRunEntry Size="154" CTSOffset="0"/>
+<TrackRunEntry Size="211" CTSOffset="512"/>
+<TrackRunEntry Size="3515" CTSOffset="2560"/>
+<TrackRunEntry Size="742" CTSOffset="1024"/>
+<TrackRunEntry Size="295" CTSOffset="0"/>
+<TrackRunEntry Size="204" CTSOffset="512"/>
+<TrackRunEntry Size="4915" CTSOffset="2560"/>
+<TrackRunEntry Size="711" CTSOffset="1024"/>
+<TrackRunEntry Size="534" CTSOffset="0"/>
+<TrackRunEntry Size="289" CTSOffset="512"/>
+<TrackRunEntry Size="4398" CTSOffset="2048"/>
+<TrackRunEntry Size="739" CTSOffset="512"/>
+<TrackRunEntry Size="379" CTSOffset="512"/>
+<TrackRunEntry Size="4075" CTSOffset="2560"/>
+<TrackRunEntry Size="738" CTSOffset="1024"/>
+<TrackRunEntry Size="423" CTSOffset="0"/>
+<TrackRunEntry Size="471" CTSOffset="512"/>
+<TrackRunEntry Size="640" CTSOffset="1024"/>
+</TrackRunBox>
+</TrackFragmentBox>
+</MovieFragmentBox>
+<MediaDataBox Size="70390" Type="mdat" Specification="p12" Container="file" dataSize="70382">
+</MediaDataBox>
+</IsoMediaFile>
+<Tracks>
+</Tracks>
+</ISOBaseMediaFileTrace>
