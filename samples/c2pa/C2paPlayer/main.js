@@ -98,7 +98,7 @@ export var C2PAPlayer = function (videoJsPlayer, videoHtml, isMonolithic = false
             });
 
             videoPlayer.on('seeked', function() {
-                handleOnSeeked(videoPlayer.currentTime() , playbackStarted , progressSegments , seeking , seektime , isMonolithic , isManifestInvalid, c2paControlBar );
+                handleOnSeeked(videoPlayer.currentTime() , playbackStarted , progressSegments , seeking , isMonolithic , isManifestInvalid, c2paControlBar, videoPlayer);
             });
 
             videoPlayer.on('seeking', function() {

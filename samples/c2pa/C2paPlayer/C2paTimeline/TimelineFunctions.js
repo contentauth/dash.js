@@ -1,8 +1,9 @@
-export let handleOnSeeked = function (time , playbackStarted , progressSegments , seeking ,isMonolithic , isManifestInvalid, c2paControlBar) {
+export let handleOnSeeked = function (time , playbackStarted , progressSegments , seeking ,isMonolithic , isManifestInvalid, c2paControlBar, videoPlayer) {
 
+    console.log('processSegments' , progressSegments)
     //A seek event is triggered at the beginning of the playbacj, so we ignore it
     if (playbackStarted && time > 0 && progressSegments.length > 0) {
-        handleSeekC2PATimeline(time, progressSegments , isMonolithic , isManifestInvalid , c2paControlBar);
+        handleSeekC2PATimeline(time, progressSegments , isMonolithic , isManifestInvalid , c2paControlBar , videoPlayer);
     }
 
     seeking = false;
@@ -67,7 +68,7 @@ export let createTimelineSegment = function (segmentStartTime, segmentEndTime, v
     return segment;
 };
 
-export let handleSeekC2PATimeline = function (seekTime , progressSegments , isMonolithic , isManifestInvalid , c2paControlBar) {
+export let handleSeekC2PATimeline = function (seekTime , progressSegments , isMonolithic , isManifestInvalid , c2paControlBar , videoPlayer) {
     
     console.log('[C2PA] Handle seek to: ', seekTime);
 
@@ -106,7 +107,7 @@ export let handleSeekC2PATimeline = function (seekTime , progressSegments , isMo
         progressSegments.push(segment);
     }
 
-    updateC2PATimeline(seekTime);
+    updateC2PATimeline(seekTime , progressSegments , videoPlayer);
 };
 
 export let handleC2PAValidation = function (verificationStatusBool, currentTime, progressSegments, c2paControlBar) {
@@ -140,6 +141,7 @@ export let updateC2PATimeline = function (currentTime , progressSegments, videoP
 
     console.log('[C2PA] Updating play bar');
 
+    console.log('progrss' , progressSegments)
     let numSegments = progressSegments.length;
     const lastSegment = progressSegments[numSegments - 1];
     lastSegment.dataset.endTime = currentTime;
