@@ -71,7 +71,7 @@
         "path-browserify": "^1.0.1",
         "ua-parser-js": "^1.0.2",
         "@flatten-js/interval-tree": "^1.0.20",
-        "c2pa": "0.16.0-fmp4-alpha.2"
+        "c2pa": "canary"
     },
     "repository": {
         "type": "git",
@@ -83,10 +83,5 @@
         "dist",
         "docs/jsdoc",
         "contrib/akamai"
-    ],
-    "overrides": {
-        "c2pa": {
-          "@contentauth/toolkit": "https://cc-assets.netlify.app/video/contentauth-toolkit-0.10.2.tgz"
-        }
-    }
+    ]
 }
