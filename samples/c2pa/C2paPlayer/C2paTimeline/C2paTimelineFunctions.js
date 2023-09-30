@@ -4,7 +4,7 @@ let progressSegments = [];
 export let handleOnSeeked = function (time , playbackStarted , seeking , isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer) {
     //A seek event is triggered at the beginning of the playbacj, so we ignore it
     if (playbackStarted && time > 0 && progressSegments.length > 0) {
-        handleSeekC2PATimeline(time, progressSegments, isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer);
+        handleSeekC2PATimeline(time , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer);
     }
 
     seeking = false;
