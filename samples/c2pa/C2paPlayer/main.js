@@ -4,7 +4,6 @@
  * @param {object=} videoHtml - video html element
  */
 
-
 import { initializeC2PAControlBar } from './C2paControlBar/C2paControlBarFunctions.js';
 import { displayFrictionOverlay, initializeFrictionOverlay } from './C2paFrictionModal/C2paFrictionModalFunctions.js';
 import { adjustC2PAMenu, initializeC2PAMenu, updateC2PAMenu } from './C2paMenu/C2paMenuFunctions.js';
@@ -18,8 +17,6 @@ export var C2PAPlayer = function (
     //Video.js player instance
     let videoPlayer = videoJsPlayer;
     const videoElement = videoHtml;
-
-
 
     //c2pa menu and control bar elements
     let c2paMenu;
@@ -40,11 +37,6 @@ export var C2PAPlayer = function (
     //Adjust height of c2pa menu with respect to the whole player
     const c2paMenuHeightOffset = 30;
 
-
-    //Hide the c2pa menu
-    let hideC2PAMenu = function () {
-        c2paMenu.hide();
-    };
 
     //Public API
     return {
