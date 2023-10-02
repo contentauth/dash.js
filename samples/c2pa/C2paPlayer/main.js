@@ -68,11 +68,13 @@ export var C2PAPlayer = function (
             });
 
             videoPlayer.on('seeked', function () {
-                seeking = handleOnSeeked(videoPlayer.currentTime() , playbackStarted , seeking ,isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer );
+                seeking = handleOnSeeked(videoPlayer.currentTime() , playbackStarted , isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer );
             });
 
             videoPlayer.on('seeking', function () {
-                seeking , lastPlaybackTime = handleOnSeeking(videoPlayer.currentTime(), seeking , lastPlaybackTime);
+                let seekResults = handleOnSeeking(videoPlayer.currentTime() , lastPlaybackTime);
+                seeking = seekResults[0];
+                lastPlaybackTime = seekResults[1];
             });
 
             //Resize the c2pa menu
