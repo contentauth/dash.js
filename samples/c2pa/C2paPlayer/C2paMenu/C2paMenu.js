@@ -1,8 +1,11 @@
 export var C2PAMenu = function () {
     //Items to show in the c2pa menu
     const c2paMenuItems = {
-        SIG_ISSUER: 'Signature Issuer',
-        CLAIM_GENERATOR: 'Claim Generator',
+        SIG_ISSUER: 'Issued by',
+        DATE: 'Issued on', 
+        CLAIM_GENERATOR: 'App or device used',
+        NAME: 'Name', 
+        SOCIAL: 'Social Media',
         VALIDATION_STATUS: 'Current Validation Status',
         ALERT: 'Alert',
     };
@@ -13,7 +16,7 @@ export var C2PAMenu = function () {
     }
 
     //Delimiter to separate the menu item name from its value
-    const c2paMenuDelimiter = ' : ';
+    const c2paMenuDelimiter = '  ';
 
     //Alert message to be shown when the c2pa validation has failed
     const c2paAlertPrefix = 'The region(s) between ';
@@ -51,6 +54,7 @@ export var C2PAMenu = function () {
             let manifest = null;
             try {
                 manifest = c2paStatus.details.video.manifest;
+                console.log('c2paStatus' , c2paStatus , 'manifest' , manifest , 'itemName' , itemName)
             } catch (error) {
                 console.error('[C2PA] Manifest does not exist');
             }
@@ -61,9 +65,19 @@ export var C2PAMenu = function () {
                         'signatureInfo'
                     ]['issuer'];
                 }
+                if (itemName == 'DATE') {
+                    return manifest['manifestStore']['activeManifest'][
+                        'signatureInfo'
+                    ]['time'];
+                }
                 if (itemName == 'CLAIM_GENERATOR') {
                     return manifest['manifestStore']['activeManifest'][
                         'claimGenerator'
+                    ];
+                }
+                if (itemName == 'NAME') {
+                    return manifest['manifestStore']['activeManifest'][
+                        'title'
                     ];
                 }
             }

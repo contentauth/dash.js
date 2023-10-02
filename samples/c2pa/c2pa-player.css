@@ -3,9 +3,14 @@
     --c2pa-passed: rgb(42, 122, 243);
     --c2pa-failed: rgb(203, 111, 14);
     --c2pa-unknown: rgb(172, 172, 172);
+    --background: rgba(0,0,0,.7);
 }
 
 /* Default colors for the videojs timeline and tooltip */
+.video-js .vjs-control-bar{
+    background-color: var(--background);
+}
+
 .video-js .vjs-progress-control {
     color: var(--c2pa-unknown)
 }
@@ -23,8 +28,11 @@
     left: 0em;
 }
 .vjs-menu-button-popup .vjs-menu .vjs-menu-content {
-    font-family: 'Verdana';
+    font-family: 'Plus Jakarta Sans', sans-serif;
     max-height: none;
+    background-color: var(--background);
+    padding: 1.25rem;
+
 }
 
 /* Style of the c2pa menu items */
@@ -32,27 +40,45 @@
     display: flex;
     justify-content: left;
     text-transform: none;
-    font-size: 1.2em;
-    border-bottom: 1px solid #ffffff;
-    padding-bottom: 5px;
-    width: 30%;
+    font-size: 1.2rem;
+    border-bottom: 0.063rem solid #ffffff;
+    padding-bottom: 0.313rem;
+    margin: 0;
+    width: 13.438rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
 }
 .vjs-menu li.vjs-menu-item {
     display: flex;
     justify-content: left;
     text-transform: none;
-    font-size: 1em;
-    border-bottom: 1px solid #ffffff;
-    padding-bottom: 5px;
-    width: 30%;
+    font-size: 1rem;
+    border-top: 0.063rem solid #ffffff;
+    padding-top:0.625rem;
+    padding-bottom:0.625rem;
+    width:13.438rem;
     cursor: default;
     white-space: pre-wrap;
+    text-align: left;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+}
+
+.vjs-menu li.vjs-menu-item:last-child {
+    border-top: none;
+}
+
+.vjs-menu li.vjs-menu-item  vjs-menu-item-text {
+justify-content: center !important;
 }
 /* Remove hover effect on c2pa menu items */
 .vjs-menu li.vjs-menu-item:hover,
 .js-focus-visible .vjs-menu li.vjs-menu-item:hover {
     background: none;
 }
+
 
 /* Style of c2pa progress bar */
 .seekbar-play-c2pa {
@@ -80,4 +106,20 @@
     border-radius: 5px;
     padding: 5px;
     float: right;
+}
+
+.vjs-menu li.vjs-menu-item .itemName{
+    font-weight: 700;
+}
+
+.vjs-menu .btn{
+    font-size: 0.8rem;
+    color: #fff;
+    padding-bottom: 0.25rem;
+    width: 100%; 
+    padding: 0.5rem;
+    background:#0265DC !important;
+    border-radius: 18px;
+  
+ 
 }

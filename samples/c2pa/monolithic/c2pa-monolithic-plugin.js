@@ -1,4 +1,4 @@
-import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm'
+import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm';
 
 async function c2pa_init(player, onPlaybackTimeUpdated) {
 
@@ -58,6 +58,8 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
         e['c2pa_status'] = updateEvent;
         onPlaybackTimeUpdated(e);
     });
+
+
 }
 
-export {c2pa_init};
+export { c2pa_init };
