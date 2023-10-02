@@ -7,7 +7,7 @@ export let handleOnSeeked = function (time , playbackStarted , seeking , isMonol
         handleSeekC2PATimeline(time , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer);
     }
 
-    seeking = false;
+    return seeking = false;
 };
 
 let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer) {
@@ -172,6 +172,8 @@ export let handleOnSeeking = function (time , seeking , lastPlaybackTime) {
 
         progressSegments = [];
         lastPlaybackTime = 0.0;
+
+        return seeking , lastPlaybackTime
     }
 };
     //Format time from seconds to mm:ss
