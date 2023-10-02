@@ -37,6 +37,9 @@ export var C2PAPlayer = function (
     //Adjust height of c2pa menu with respect to the whole player
     const c2paMenuHeightOffset = 30;
 
+    let setPlaybackStarted = function () {
+        playbackStarted = true;
+    }
 
     //Public API
     return {
@@ -47,7 +50,7 @@ export var C2PAPlayer = function (
             initializeC2PAControlBar(videoPlayer);
             initializeC2PAMenu( videoPlayer);
             //Initialize friction overlay to be displayed if initial manifest validation fails
-            initializeFrictionOverlay(frictionOverlay , videoPlayer , playbackStarted);
+            frictionOverlay = initializeFrictionOverlay(videoPlayer , setPlaybackStarted);
 
             //Get c2pa menu and control bar elements from html
             c2paMenu = videoPlayer.controlBar.getChild('C2PAMenuButton');
@@ -63,7 +66,7 @@ export var C2PAPlayer = function (
                     );
                     displayFrictionOverlay(playbackStarted , videoPlayer , frictionOverlay);
                 } else {
-                    playbackStarted = true;
+                    setPlaybackStarted();
                 }
             });
 
