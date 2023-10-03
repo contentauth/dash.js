@@ -68,13 +68,21 @@ export var C2PAMenu = function () {
                     ]['issuer'];
                 }
                 if (itemName == 'DATE') {
-                    var date = new Date(manifest['manifestStore']['activeManifest'][
-                        'signatureInfo']['time'])
-                    return new Intl.DateTimeFormat('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: '2-digit',
-                    }).format(date);
+                    if(manifest['manifestStore']['activeManifest'][
+                        'signatureInfo']['time'] != null){
+                        var date = new Date(manifest['manifestStore']['activeManifest'][
+                            'signatureInfo']['time'])
+                        return new Intl.DateTimeFormat('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
+                        }).format(date);
+                    }else{
+                        return null
+                    }
+          
+         
+     
                 }
                 if (itemName == 'CLAIM_GENERATOR') {
                     return manifest['manifestStore']['activeManifest'][
@@ -83,13 +91,22 @@ export var C2PAMenu = function () {
                 }
                 if (itemName == 'NAME') {
                     producer = selectProducer(manifest.manifestStore.activeManifest)
-                    return producer.name
+                    if(producer){
+                        return producer.name
+                    }
+                    return null
+                
                 }
                 if (itemName == 'SOCIAL') {
+
                     socialMedia = selectSocialAccounts(manifest.manifestStore.activeManifest)
-                    return socialMedia.map(account => {
-                        return account['@id']
-                    })
+                    if(socialMedia){
+                        return socialMedia.map(account => {
+                            return account['@id']
+                        })
+                    }
+                    return null
+                
                 }
             }
             if (itemName == 'VALIDATION_STATUS') {
