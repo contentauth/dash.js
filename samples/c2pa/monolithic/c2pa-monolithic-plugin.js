@@ -1,4 +1,4 @@
-import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm';
+import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/+esm'
 
 async function c2pa_init(player, onPlaybackTimeUpdated) {
 
@@ -6,8 +6,8 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
     /* Create C2PA instance */
     const c2pa = await createC2pa({
-        wasmSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/assets/wasm/toolkit_bg.wasm',
-        workerSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/dist/c2pa.worker.js',
+        wasmSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/dist/assets/wasm/toolkit_bg.wasm',
+        workerSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/dist/c2pa.worker.js',
     });
 
     /* Extract manifest from video. Since this is a monolithic file,

@@ -19,7 +19,6 @@ export let initializeC2PAMenu = function (videoPlayer) {
                         console.log('Redirecting user to Verify')
                     }
                         
-            
                     return;
                 };
                 return item;
@@ -142,7 +141,6 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
                     c2paMenuInstance.c2paMenuDelimiter() +
                     c2paItemValue;
             }
-
             c2paItem.style.display = 'block';
         } else {
             //If the value is null, we hide the menu item
@@ -151,7 +149,6 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
         items[0].innerHTML = '<span class="btn">' +
         items[0].innerText +
         '</span>'
-
     });
 };
 

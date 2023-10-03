@@ -1,13 +1,14 @@
 //List of segments to be added to the progress bar, showing the c2pa validation status
 let progressSegments = [];
 
-export let handleOnSeeked = function (time , playbackStarted , seeking , isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer) {
+export let handleOnSeeked = function (time , playbackStarted , isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer) {
     //A seek event is triggered at the beginning of the playbacj, so we ignore it
     if (playbackStarted && time > 0 && progressSegments.length > 0) {
         handleSeekC2PATimeline(time , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer);
     }
 
-    return seeking = false;
+    const seeking = false;
+    return seeking;
 };
 
 let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer) {
@@ -160,9 +161,9 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
 };
 
 
-export let handleOnSeeking = function (time , seeking , lastPlaybackTime) {
+export let handleOnSeeking = function (time , lastPlaybackTime) {
     console.log('[C2PA] Player seeking: ', time);
-    seeking = true;
+    const seeking = true;
 
     if (time === 0) {
         console.log('[C2PA] Player resetting');
@@ -171,10 +172,12 @@ export let handleOnSeeking = function (time , seeking , lastPlaybackTime) {
         });
 
         progressSegments = [];
-        lastPlaybackTime = 0.0;
+        const resetPlaybackTime = 0.0;
 
-        return seeking , lastPlaybackTime
+        return [seeking , resetPlaybackTime];
     }
+
+    return [seeking , lastPlaybackTime];
 };
     //Format time from seconds to mm:ss
 export let formatTime = function (seconds) {

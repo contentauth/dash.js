@@ -1,4 +1,4 @@
-export let initializeC2PAControlBar = function (videoPlayer ) {
+export let initializeC2PAControlBar = function (videoPlayer) {
     //The playback progress bar from video-js is extended to support c2pa validation
     const LoadProgressBar = videojs.getComponent('LoadProgressBar');
 
@@ -20,3 +20,4 @@ export let initializeC2PAControlBar = function (videoPlayer ) {
     c2paTimeline.el().style.width = '100%';
     c2paTimeline.el().style.backgroundColor = 'transparent';
 };
+

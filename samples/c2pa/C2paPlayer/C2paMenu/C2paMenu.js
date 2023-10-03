@@ -1,4 +1,4 @@
-import { selectProducer, selectSocialAccounts } from 'https://cdn.jsdelivr.net/npm/c2pa@0.16.0-fmp4-alpha.2/+esm';
+import { selectProducer, selectSocialAccounts } from 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/+esm';
 export var C2PAMenu = function () {
     //Items to show in the c2pa menu
     const c2paMenuItems = {
@@ -55,13 +55,11 @@ export var C2PAMenu = function () {
             let manifest, producer, socialMedia = null;
             try {
                 manifest = c2paStatus.details.video.manifest;
-                console.log('c2paStatus' , c2paStatus , 'manifest' , manifest , 'itemName' , itemName)
             } catch (error) {
                 console.error('[C2PA] Manifest does not exist');
             }
             
             if (manifest != null && manifest['manifestStore'] != null) {
-           
                 if (itemName == 'SIG_ISSUER') {
                     return manifest['manifestStore']['activeManifest'][
                         'signatureInfo'

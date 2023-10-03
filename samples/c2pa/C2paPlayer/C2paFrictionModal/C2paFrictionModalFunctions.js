@@ -1,4 +1,5 @@
-export let initializeFrictionOverlay = function (frictionOverlay , videoPlayer , playbackStarted) {
+export let initializeFrictionOverlay = function (videoPlayer , setPlaybackStarted) {
+    let frictionOverlay;
     //Create the friction overlay container
     frictionOverlay = document.createElement('div');
     frictionOverlay.className = 'friction-overlay';
@@ -28,9 +29,11 @@ export let initializeFrictionOverlay = function (frictionOverlay , videoPlayer ,
     watchAnywayBtn.addEventListener('click', function () {
         //Close overlay and resume playback
         frictionOverlay.style.display = 'none';
-        playbackStarted = true;
+        setPlaybackStarted();
         videoPlayer.play();
     });
+
+    return frictionOverlay;
 };
 
 //Display the friction overlay if the initial manifest validation fails
