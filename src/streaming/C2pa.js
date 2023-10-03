@@ -58,12 +58,14 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
 
         let tag = e.streamId + '-' + e.request.mediaType + '-' + e.request.representationId;
 
+        console.log('[C2PA] Processing verification for ' + tag, e.request.startTime, e.request.startTime + e.request.duration);
+
         // TODO(hawang) change the mimetype the actual one from the response
         // TODO(hawang) use InitCache created for each media type in BufferController instead of saving here
         if (e.request.type == 'InitializationSegment') {
             //TODO: mimetype should change based on actual type from chunk
             initFragment[tag] = new Blob([e.response], {type: 'video/mp4'});
-            console.log('[C2PA] Got init seg for ' + tag)
+            console.log('[C2PA] Got init seg for ' + tag);
         }
         else if (!(tag in initFragment)) {
             console.error('[C2PA] initFragment is null ' + tag);

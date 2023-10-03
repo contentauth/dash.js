@@ -71,11 +71,11 @@ export var C2PAPlayer = function (
             });
 
             videoPlayer.on('seeked', function () {
-                seeking = handleOnSeeked(videoPlayer.currentTime() , playbackStarted , isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer );
+                seeking = handleOnSeeked(videoPlayer.currentTime());
             });
 
             videoPlayer.on('seeking', function () {
-                let seekResults = handleOnSeeking(videoPlayer.currentTime() , lastPlaybackTime);
+                let seekResults = handleOnSeeking(videoPlayer.currentTime() , playbackStarted , lastPlaybackTime , isMonolithic , c2paControlBar , videoPlayer);
                 seeking = seekResults[0];
                 lastPlaybackTime = seekResults[1];
             });

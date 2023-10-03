@@ -1,17 +1,36 @@
 //List of segments to be added to the progress bar, showing the c2pa validation status
 let progressSegments = [];
 
-export let handleOnSeeked = function (time , playbackStarted , isMonolithic , c2paControlBar, isManifestInvalid, videoPlayer) {
-    //A seek event is triggered at the beginning of the playbacj, so we ignore it
-    if (playbackStarted && time > 0 && progressSegments.length > 0) {
-        handleSeekC2PATimeline(time , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer);
-    }
-
+export let handleOnSeeked = function (time) {
     const seeking = false;
     return seeking;
 };
 
-let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer) {
+export let handleOnSeeking = function (time , playbackStarted , lastPlaybackTime , isMonolithic , c2paControlBar , videoPlayer) {
+    console.log('[C2PA] Player seeking: ', time);
+    const seeking = true;
+
+    if (time === 0) {
+        console.log('[C2PA] Player resetting');
+        progressSegments.forEach((segment) => {
+            segment.remove();
+        });
+
+        progressSegments = [];
+        const resetPlaybackTime = 0.0;
+
+        return [seeking , resetPlaybackTime];
+    }
+
+    //A seek event is triggered at the beginning of the playback, so we ignore it
+    if (playbackStarted && time > 0 && progressSegments.length > 0) {
+        handleSeekC2PATimeline(time, isMonolithic, c2paControlBar, videoPlayer);
+    }
+
+    return [seeking , lastPlaybackTime];
+};
+
+let handleSeekC2PATimeline = function (seekTime, isMonolithic, c2paControlBar, videoPlayer) {
     console.log('[C2PA] Handle seek to: ', seekTime);
 
     //Remove segments that are not active anymore
@@ -34,30 +53,13 @@ let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, 
         //Adjust end time of last segment if seek time is lower than the previous end time
         lastSegment.dataset.endTime = seekTime;
     } else {
-        let segment;
-        //In the monolithic case, the entire video has already been validated, so when seeking, the validation status
-        //is known for the entire video. Therefore, we create a new segment with the same validation status as the last segment
-        if (isMonolithic) {
-            segment = createTimelineSegment(
-                lastSegment.dataset.endTime,
-                seekTime,
-                lastSegment.dataset.verificationStatus, 
-                isManifestInvalid
-            );
+        if (!isMonolithic && lastSegment.dataset.endTime != seekTime && lastSegment.dataset.verificationStatus != "unknown") {
+            //In the streaming case, if there was a jump ahead in the timeline, we do not know the validation status
+            //Therefore, we create an unkwown segment and add it to the timeline
+            const segment = createTimelineSegment(lastSegment.dataset.endTime, seekTime, 'unknown');
+            c2paControlBar.el().appendChild(segment);
+            progressSegments.push(segment);
         }
-        //In the streaming case, if there was a jump ahead in the timeline, we do not know the validation status
-        //Therefore, we create an unkwown segment and add it to the timeline
-        else {
-            segment = createTimelineSegment(
-                lastSegment.dataset.endTime,
-                seekTime,
-                'unknown', 
-                isManifestInvalid
-            );
-        }
-
-        c2paControlBar.el().appendChild(segment);
-        progressSegments.push(segment);
     }
 
     updateC2PATimeline(seekTime, videoPlayer);
@@ -158,26 +160,6 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
         numSegments--;
         console.log('[C2PA] ----');
     });
-};
-
-
-export let handleOnSeeking = function (time , lastPlaybackTime) {
-    console.log('[C2PA] Player seeking: ', time);
-    const seeking = true;
-
-    if (time === 0) {
-        console.log('[C2PA] Player resetting');
-        progressSegments.forEach((segment) => {
-            segment.remove();
-        });
-
-        progressSegments = [];
-        const resetPlaybackTime = 0.0;
-
-        return [seeking , resetPlaybackTime];
-    }
-
-    return [seeking , lastPlaybackTime];
 };
     //Format time from seconds to mm:ss
 export let formatTime = function (seconds) {
