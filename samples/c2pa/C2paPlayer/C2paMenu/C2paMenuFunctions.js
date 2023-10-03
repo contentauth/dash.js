@@ -1,4 +1,5 @@
 import { C2PAMenu } from './C2paMenu.js';
+import { providerInfoFromSocialId } from './Providers.js';
 //C2PA menu instance
 let c2paMenuInstance = new C2PAMenu();
 export let initializeC2PAMenu = function (videoPlayer) {
@@ -13,6 +14,11 @@ export let initializeC2PAMenu = function (videoPlayer) {
                 let item = new MenuItem(this.player_, { label: i.name });
                 item.handleClick = function () {
                     //No click behavior implemented for now
+                    if(this.options_.label == 'View More'){
+                    //TODO : add redirection to Verify (needs cloud stored videos)
+                        console.log('Redirecting user to Verify')
+                    }
+                    console.log('item allop', item)
                     return;
                 };
                 return item;
@@ -40,13 +46,16 @@ export let initializeC2PAMenu = function (videoPlayer) {
         });
     });
 
+    // C2PAMenuButton.addChild("viewMoreButton", viewMoreButton);
+    const viewMoreButton = { name: 'View More' };
+
     // Use `addChild` to add an instance of the new component, with options
     videoPlayer.controlBar.addChild(
         'C2PAMenuButton',
         {
             controlText: 'Content Credentials',
             title: 'Content Credentials',
-            myItems: c2pAItems,
+            myItems: [...c2pAItems, viewMoreButton],
         },
         0
     ); //0 indicates that the menu button will be the first item in the control bar
@@ -71,7 +80,11 @@ export let adjustC2PAMenu = function (c2paMenu , videoElement , c2paMenuHeightOf
 //Update the c2pa menu items with the values from the c2pa manifest
 export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , videoPlayer , getCompromisedRegions) {
     //Get all the items in the c2pa menu
-    const c2paItems = c2paMenu.el().querySelectorAll('.vjs-menu-item');
+    //Get all the items in the c2pa menu
+    const items = Array.from(
+        c2paMenu.el().querySelectorAll('.vjs-menu-item')
+    );
+    const c2paItems = items.splice(0, items.length - 1);
     const compromisedRegions = getCompromisedRegions(isMonolithic , videoPlayer);
 
     c2paItems.forEach((c2paItem) => {
@@ -98,16 +111,46 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
         );
 
         if (c2paItemValue != null) {
+            //formatting for social media links
+            if(c2paItemKey=== 'SOCIAL' ){
+     
+                var socialArray = c2paItemValue.map(function (account) {
+                    var formattedWebsite = providerInfoFromSocialId(account).name
+                    return `<span><a class="url" href=${account}>${formattedWebsite}</a></span>`
+         
+                });
+                c2paItem.innerHTML =
+                '<span class="itemName nextLine">' +
+                c2paItemName +
+                '</span>' +
+                c2paMenuInstance.c2paMenuDelimiter() + socialArray.join('\n')
+            }
             //If the value is not null, we update the menu item text and show it
-            c2paItem.innerText =
+            else if (c2paItemValue.length >= 32) {
+                c2paItem.innerHTML =
+                    '<span class="itemName nextLine">' +
                     c2paItemName +
+                    '</span>' +
+                    c2paMenuInstance.c2paMenuDelimiter() +'<br/>' + 
+                    c2paItemValue;
+            } else {
+                c2paItem.innerHTML =
+                    '<span class="itemName">' +
+                    c2paItemName +
+                    '</span>' +
                     c2paMenuInstance.c2paMenuDelimiter() +
                     c2paItemValue;
+            }
+
             c2paItem.style.display = 'block';
         } else {
             //If the value is null, we hide the menu item
             c2paItem.style.display = 'none';
         }
+        items[0].innerHTML = '<span class="btn">' +
+        items[0].innerText +
+        '</span>'
+
     });
 };
 
