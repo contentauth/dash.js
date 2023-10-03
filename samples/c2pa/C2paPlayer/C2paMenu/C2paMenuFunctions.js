@@ -18,7 +18,8 @@ export let initializeC2PAMenu = function (videoPlayer) {
                     //TODO : add redirection to Verify (needs cloud stored videos)
                         console.log('Redirecting user to Verify')
                     }
-                    console.log('item allop', item)
+                        
+            
                     return;
                 };
                 return item;
@@ -128,7 +129,7 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
             //If the value is not null, we update the menu item text and show it
             else if (c2paItemValue.length >= 32) {
                 c2paItem.innerHTML =
-                    '<span class="itemName nextLine">' +
+                    '<span class="itemName">' +
                     c2paItemName +
                     '</span>' +
                     c2paMenuInstance.c2paMenuDelimiter() +'<br/>' + 
