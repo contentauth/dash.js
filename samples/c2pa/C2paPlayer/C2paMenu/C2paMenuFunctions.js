@@ -50,9 +50,6 @@ export let initializeC2PAMenu = function (videoPlayer, c2paMenu) {
         },
         0
     ); //0 indicates that the menu button will be the first item in the control bar
-
-
-
 };
 
 //Adjust c2pa menu size with respect to the player size
