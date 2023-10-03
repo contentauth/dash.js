@@ -22,7 +22,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
         workerSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/dist/c2pa.worker.js',
     });
 
-    player.extend("SegmentResponseModifier", function () {
+    player.extend('SegmentResponseModifier', function () {
         return {
             modifyResponseAsync: async function (chunk) {
                 if (!C2paSupportedMediaTypes.includes(chunk.mediaInfo.type)) {
@@ -47,9 +47,9 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                         tree[tag] = new IntervalTree();
 
                     const interval = [chunk.start, chunk.end];
-                    const c2paInfo = {  'type': chunk.segmentType, 
-                                        'manifest': manifest,
-                                        'interval': [chunk.start, chunk.end]
+                    const c2paInfo = { 'type': chunk.segmentType, 
+                        'manifest': manifest,
+                        'interval': [chunk.start, chunk.end]
                     };
 
                     tree[tag].search(interval).forEach((seg) => {
@@ -95,7 +95,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
             console.log('[C2PA] Searching verification for ' + tag + ' at time ' + verificationTime);
 
             if (!(tag in tree)) {
-                console.error("[C2PA] Cannot find " + tag);
+                console.error('[C2PA] Cannot find ' + tag);
                 continue
             }
 
@@ -159,4 +159,4 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
     });
 }
 
-export {c2pa_init};
+export { c2pa_init };
