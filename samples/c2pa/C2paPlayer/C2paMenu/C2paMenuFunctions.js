@@ -1,5 +1,6 @@
 import { C2PAMenu } from './C2paMenu.js';
 import { providerInfoFromSocialId } from './Providers.js';
+
 //C2PA menu instance
 let c2paMenuInstance = new C2PAMenu();
 export let initializeC2PAMenu = function (videoPlayer) {
@@ -113,7 +114,6 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
         if (c2paItemValue != null) {
             //formatting for social media links
             if(c2paItemKey=== 'SOCIAL' ){
-     
                 var socialArray = c2paItemValue.map(function (account) {
                     var formattedWebsite = providerInfoFromSocialId(account).name
                     return `<span><a class="url" href=${account}>${formattedWebsite}</a></span>`

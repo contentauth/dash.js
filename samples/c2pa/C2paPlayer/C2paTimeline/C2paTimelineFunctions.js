@@ -6,14 +6,12 @@ export let handleOnSeeked = function (time , playbackStarted , isMonolithic , c2
     if (playbackStarted && time > 0 && progressSegments.length > 0) {
         handleSeekC2PATimeline(time , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer);
     }
-
     const seeking = false;
     return seeking;
 };
 
 let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, isManifestInvalid, videoPlayer) {
     console.log('[C2PA] Handle seek to: ', seekTime);
-
     //Remove segments that are not active anymore
     progressSegments = progressSegments.filter((segment) => {
         const segmentStartTime = parseFloat(segment.dataset.startTime);

@@ -1,5 +1,7 @@
 import { selectProducer, selectSocialAccounts } from 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/+esm';
+
 export var C2PAMenu = function () {
+
     //Items to show in the c2pa menu
     const c2paMenuItems = {
         SIG_ISSUER: 'Issued by',
@@ -89,7 +91,6 @@ export var C2PAMenu = function () {
                         return account['@id']
                     })
                 }
-
             }
             if (itemName == 'VALIDATION_STATUS') {
                 switch (verificationStatus) {
