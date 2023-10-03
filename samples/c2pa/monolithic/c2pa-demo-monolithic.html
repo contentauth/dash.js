@@ -30,9 +30,9 @@
         /* c2pa player instance */
         var c2paPlayer;
         
-        function init() {
+        async function init() {
             var video,
-                url = "../../microsoft/video_samples/monolithic/provenanceoutput_progressivedownload.mp4";
+                url = "../../microsoft/video_samples/provenanceoutput_tearsOfSteel_flatfile_progressivedownload.mp4";
 
             video = document.querySelector("#videoPlayer");
             
@@ -44,7 +44,10 @@
             c2paPlayer.initialize();
 
             /* Initialize native video element */
-            video.src = url;
+            const video_blob = await (await fetch(url)).blob();
+            const media_url = URL.createObjectURL(video_blob);
+            
+            video.src = media_url;
             video.type = 'video/mp4';
 
             /* Once video is ready for playback, initialize c2pa plugin,
