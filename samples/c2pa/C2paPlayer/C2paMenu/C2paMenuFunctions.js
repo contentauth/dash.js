@@ -8,6 +8,12 @@ export let initializeC2PAMenu = function (videoPlayer) {
     const MenuItem = videojs.getComponent('MenuItem');
 
     class C2PAMenuButton extends MenuButton {
+
+        constructor(player, options) {
+            super(player, options);
+            this.closeC2paMenu = false;
+        }
+
         createItems() {
             // Must return an array of `MenuItem`s
             // Options passed in `addChild` are available at `this.options_`
@@ -24,6 +30,22 @@ export let initializeC2PAMenu = function (videoPlayer) {
                 };
                 return item;
             });
+        }
+
+        handleClick() {
+            if (this.buttonPressed_) {
+                this.closeC2paMenu = true;
+                this.unpressButton();
+            } else {
+                this.pressButton();
+            }
+        }
+
+        unpressButton() {
+            if (this.closeC2paMenu) {
+                this.closeC2paMenu = false;
+                super.unpressButton();
+            }
         }
 
         buildCSSClass() {
