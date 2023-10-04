@@ -129,14 +129,12 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
     lastSegment.dataset.endTime = currentTime;
 
     //Update the color of the progress bar tooltip to match with the that of the last segment
-    const progressControl = videoPlayer
-        .el()
-        .querySelector('.vjs-progress-control');
-    progressControl.style.color = lastSegment.style.backgroundColor;
     const playProgressControl = videoPlayer
         .el()
         .querySelector('.vjs-play-progress');
-    playProgressControl.style.backgroundColor =
+    playProgressControl.style.backgroundColor = 
+        lastSegment.style.backgroundColor;
+    playProgressControl.style.color =
         lastSegment.style.backgroundColor;
 
     //Update the width of the segments
