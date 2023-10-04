@@ -1,8 +1,8 @@
 /* Colors for the c2pa timeline */
 :root {
-    --c2pa-passed: rgb(42, 122, 243);
-    --c2pa-failed: rgb(203, 111, 14);
-    --c2pa-unknown: rgb(172, 172, 172);
+    --c2pa-passed: #147AF3;
+    --c2pa-failed: #D31510;
+    --c2pa-unknown: #909090;
 }
 
 /***TIMELINE CSS***/
@@ -27,14 +27,8 @@ display:block !important;
 .video-js .vjs-play-progress::before{
 font-size: 1.5em;
 line-height: 0.5em;
-z-index: 3;
+z-index: 10;
 }
-
-.video-js .vjs-play-progress:after{
-    font-size: 1.5em;
-    line-height: 0.5em;
-    z-index: 1;
-    }
 
 .video-js .vjs-slider {
     height: 0.7em;
@@ -52,6 +46,17 @@ z-index: 3;
     background: url('./assets/icons/cr-icon-whitebg.svg') center center no-repeat;
 }
 
+.c2pa-menu-button .c2pa-menu-button-invalid[aria-expanded="false"] .vjs-icon-placeholder{
+    width: 36px;
+    height: 22px;
+    background: url('./assets/icons/cr-invalid.svg') center center no-repeat;
+}
+
+.c2pa-menu-button .c2pa-menu-button-invalid[aria-expanded="true"] .vjs-icon-placeholder{
+    width: 36px;
+    height: 22px;
+    background: url('./assets/icons/cr-invalid-whitebg.svg') center center no-repeat;
+}
 /* Style of c2pa progress bar */
 .seekbar-play-c2pa {
     position: absolute;

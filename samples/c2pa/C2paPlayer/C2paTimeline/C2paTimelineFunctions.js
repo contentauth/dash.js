@@ -52,10 +52,10 @@ let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, 
                 lastSegment.dataset.endTime,
                 seekTime,
                 'unknown', 
-                isManifestInvalid
+                isManifestInvalid,
             );
         }
-
+       
         c2paControlBar.el().appendChild(segment);
         progressSegments.push(segment);
     }
@@ -67,7 +67,7 @@ let createTimelineSegment = function (
     segmentStartTime,
     segmentEndTime,
     verificationStatus,
-    isManifestInvalid
+    isManifestInvalid,
 ) {
     const segment = document.createElement('div');
     segment.className = 'seekbar-play-c2pa';
@@ -84,6 +84,7 @@ let createTimelineSegment = function (
             .getPropertyValue('--c2pa-failed')
             .trim();
     } else {
+        const c2paInvalidButton = document.querySelector('.c2pa-menu-button button')
         if (verificationStatus == 'true') {
             //c2pa validation passed
             segment.style.backgroundColor = getComputedStyle(
@@ -91,6 +92,10 @@ let createTimelineSegment = function (
             )
                 .getPropertyValue('--c2pa-passed')
                 .trim();
+            if(document.querySelector('.c2pa-menu-button-invalid')){
+                c2paInvalidButton.classList.remove('c2pa-menu-button-invalid') 
+            }
+
         } else if (verificationStatus == 'false') {
             //c2pa validation failed
             segment.style.backgroundColor = getComputedStyle(
@@ -98,6 +103,11 @@ let createTimelineSegment = function (
             )
                 .getPropertyValue('--c2pa-failed')
                 .trim();
+
+            if(!document.querySelector('.c2pa-menu-button-invalid')){
+                c2paInvalidButton.classList.add('c2pa-menu-button-invalid') 
+            }
+                
         } else {
             //c2pa validation not available or unkwown
             segment.style.backgroundColor = getComputedStyle(
@@ -217,7 +227,7 @@ export let handleC2PAValidation = function (verificationStatusBool, currentTime 
         const segment = createTimelineSegment(
             currentTime,
             currentTime,
-            verificationStatus
+            verificationStatus,
         );
         c2paControlBar.el().appendChild(segment);
         progressSegments.push(segment);
