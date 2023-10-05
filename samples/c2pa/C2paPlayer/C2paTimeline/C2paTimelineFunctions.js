@@ -93,7 +93,6 @@ let createTimelineSegment = function (
                 .getPropertyValue('--c2pa-passed')
                 .trim();
             if(document.querySelector('.c2pa-menu-button-invalid')){
-                c2paInvalidButton.classList.remove('c2pa-menu-button-invalid') 
             }
 
         } else if (verificationStatus == 'false') {
