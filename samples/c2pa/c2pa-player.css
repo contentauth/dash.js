@@ -108,15 +108,6 @@ justify-content: center !important;
     font-weight: 700;
 }
 
-.vjs-menu .btn{
-    font-size: 0.8rem;
-    color: #fff;
-    padding-bottom: 0.25rem;
-    width: 100%; 
-    padding: 0.5rem;
-    background:#0265DC !important;
-    border-radius: 18px;
-}
 .vjs-menu .url{
     color :#4B9CF5;
     font-weight: 700;
@@ -127,18 +118,18 @@ justify-content: center !important;
     background-color : var(--c2pa-failed);
     padding:10px;
     border-radius: 4px;
-
-
 }
+
 .alert-icon{
    content:  url('./assets/icons/alert.svg');
    padding-right:10px;
-
 }
+
 .alerting{
     display:flex; 
     align-items: flex-start;
 }
+
 .validation-padding{
     padding-bottom: 0px !important;
 }
