@@ -17,6 +17,7 @@ export let initializeC2PAControlBar = function (videoPlayer) {
         videoPlayer.controlBar.progressControl.seekBar.getChild(
             'C2PALoadProgressBar'
         );
+ 
     c2paTimeline.el().style.width = '100%';
     c2paTimeline.el().style.backgroundColor = 'transparent';
 };

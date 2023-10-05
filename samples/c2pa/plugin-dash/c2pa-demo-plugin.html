@@ -11,12 +11,16 @@
     <link href="../../lib/main.css" rel="stylesheet">
 
     <!-- video-js -->
-    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.3.0/video.js"></script>
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
 
     <!-- c2pa player -->
     <link href="../c2pa-player.css" rel="stylesheet" />
 
+         <!-- jakarta font-->
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         video {
@@ -36,16 +40,18 @@
         function init() {
             var video,
                 dashPlayer,
-                url = "../../microsoft/video_samples/DASH/audio_video_sample/manifest.mpd";
+                url = 'https://cc-assets.netlify.app/video/fmp4-samples/valid/BigBuckBunny_2s_simple_2014_05_09.mpd';
 
             video = document.querySelector("#videoPlayer");
             /* Create dashjs player */
             /* Responsible for streaming video */
             dashPlayer = dashjs.MediaPlayer().create();
 
+            var options = {fluid: true , controlBar: { children: ['playToggle' , 'progressControl', "currentTimeDisplay", 'volumePanel','pictureInPictureToggle','fullscreenToggle']}}
+
             /* Create videojs player and c2pa player */
             /* Responsible for UI and playback control */
-            var videoJsPlayer = videojs('videoPlayer', {fluid: true});
+            var videoJsPlayer = videojs('videoPlayer', options)
             c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
             c2paPlayer.initialize();
 
