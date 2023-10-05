@@ -64,7 +64,7 @@ let handleSeekC2PATimeline = function (seekTime, isMonolithic, c2paControlBar, v
         }
     }
 
-    updateC2PATimeline(seekTime, videoPlayer);
+    updateC2PATimeline(seekTime, videoPlayer, c2paControlBar);
 };
     //Create a new progress segment to be added to the c2pa progress bar
 let createTimelineSegment = function (
@@ -115,31 +115,27 @@ let createTimelineSegment = function (
     return segment;
 };
 
-export let updateC2PATimeline = function (currentTime , videoPlayer) {
+export let updateC2PATimeline = function (currentTime , videoPlayer, c2paControlBar) {
     console.log('[C2PA] Updating play bar');
+
+    //If no new segments have been added to the timeline, we add a new one with unknown status
+    if (progressSegments.length === 0) {
+        handleC2PAValidation('unknown', currentTime , c2paControlBar);
+    }
 
     let numSegments = progressSegments.length;
     const lastSegment = progressSegments[numSegments - 1];
-
-    let progressColor = getComputedStyle(
-        document.documentElement
-    )
-        .getPropertyValue('--c2pa-unknown')
-        .trim();
-    if (lastSegment) {
-        lastSegment.dataset.endTime = currentTime;
-        progressColor = lastSegment.style.backgroundColor;
-    }
+    lastSegment.dataset.endTime = currentTime;
 
     //Update the color of the progress bar tooltip to match with the that of the last segment
     const progressControl = videoPlayer
         .el()
         .querySelector('.vjs-progress-control');
-    progressControl.style.color = progressColor;
+    progressControl.style.color = lastSegment.style.backgroundColor;;
     const playProgressControl = videoPlayer
         .el()
         .querySelector('.vjs-play-progress');
-    playProgressControl.style.backgroundColor = progressColor;
+    playProgressControl.style.backgroundColor = lastSegment.style.backgroundColor;;
 
     //Update the width of the segments
     progressSegments.forEach((segment) => {

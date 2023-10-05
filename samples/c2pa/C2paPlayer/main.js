@@ -109,7 +109,7 @@ export var C2PAPlayer = function (
                 //Creates new c2pa progress segment to be added to the progress bar
                 handleC2PAValidation(c2paStatus.verified, currentTime, c2paControlBar);
                 //Update c2pa progress timeline
-                updateC2PATimeline(currentTime , videoPlayer);
+                updateC2PATimeline(currentTime , videoPlayer, c2paControlBar);
                 //Update c2pa menu based on manifest
                 updateC2PAMenu(c2paStatus, c2paMenu , isMonolithic , videoPlayer , getCompromisedRegions,);
             }
