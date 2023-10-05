@@ -49,16 +49,18 @@ let handleSeekC2PATimeline = function (seekTime, isMonolithic, c2paControlBar, v
     });
 
     const lastSegment = progressSegments[progressSegments.length - 1];
-    if (lastSegment.dataset.endTime > seekTime) {
-        //Adjust end time of last segment if seek time is lower than the previous end time
-        lastSegment.dataset.endTime = seekTime;
-    } else {
-        if (!isMonolithic && lastSegment.dataset.endTime != seekTime && lastSegment.dataset.verificationStatus != "unknown") {
-            //In the streaming case, if there was a jump ahead in the timeline, we do not know the validation status
-            //Therefore, we create an unkwown segment and add it to the timeline
-            const segment = createTimelineSegment(lastSegment.dataset.endTime, seekTime, 'unknown');
-            c2paControlBar.el().appendChild(segment);
-            progressSegments.push(segment);
+    if (lastSegment) {
+        if (lastSegment.dataset.endTime > seekTime) {
+            //Adjust end time of last segment if seek time is lower than the previous end time
+            lastSegment.dataset.endTime = seekTime;
+        } else {
+            if (!isMonolithic && lastSegment.dataset.endTime != seekTime && lastSegment.dataset.verificationStatus != "unknown") {
+                //In the streaming case, if there was a jump ahead in the timeline, we do not know the validation status
+                //Therefore, we create an unkwown segment and add it to the timeline
+                const segment = createTimelineSegment(lastSegment.dataset.endTime, seekTime, 'unknown');
+                c2paControlBar.el().appendChild(segment);
+                progressSegments.push(segment);
+            }
         }
     }
 
@@ -118,18 +120,26 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
 
     let numSegments = progressSegments.length;
     const lastSegment = progressSegments[numSegments - 1];
-    lastSegment.dataset.endTime = currentTime;
+
+    let progressColor = getComputedStyle(
+        document.documentElement
+    )
+        .getPropertyValue('--c2pa-unknown')
+        .trim();
+    if (lastSegment) {
+        lastSegment.dataset.endTime = currentTime;
+        progressColor = lastSegment.style.backgroundColor;
+    }
 
     //Update the color of the progress bar tooltip to match with the that of the last segment
     const progressControl = videoPlayer
         .el()
         .querySelector('.vjs-progress-control');
-    progressControl.style.color = lastSegment.style.backgroundColor;
+    progressControl.style.color = progressColor;
     const playProgressControl = videoPlayer
         .el()
         .querySelector('.vjs-play-progress');
-    playProgressControl.style.backgroundColor =
-        lastSegment.style.backgroundColor;
+    playProgressControl.style.backgroundColor = progressColor;
 
     //Update the width of the segments
     progressSegments.forEach((segment) => {
