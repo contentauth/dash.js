@@ -1,7 +1,7 @@
 /* Colors for the c2pa timeline */
 :root {
     --c2pa-passed: rgb(42, 122, 243);
-    --c2pa-failed: rgb(203, 111, 14);
+    --c2pa-failed: #D31510;
     --c2pa-unknown: rgb(172, 172, 172);
     --background: rgba(0,0,0,.7);
 }
@@ -18,10 +18,7 @@
     background-color: var(--c2pa-unknown)
 }
 
-/* Disable hover effect on c2pa menu */
-.vjs-workinghover .vjs-menu-button-popup:hover .vjs-menu {
-    display: none;
-}
+
 
 /* Style of the c2pa menu */
 .vjs-menu-button-popup .vjs-menu {
@@ -95,7 +92,6 @@ justify-content: center !important;
     width: 40%;
     padding: 10px;
     border-radius: 5px;
-
     font-family: 'Verdana';
     font-size: 1em;
     color: #fff;
@@ -120,10 +116,29 @@ justify-content: center !important;
     padding: 0.5rem;
     background:#0265DC !important;
     border-radius: 18px;
-  
- 
 }
 .vjs-menu .url{
     color :#4B9CF5;
     font-weight: 700;
+}
+
+.alert-div{
+    width: 100%;
+    background-color : var(--c2pa-failed);
+    padding:10px;
+    border-radius: 4px;
+
+
+}
+.alert-icon{
+   content:  url('./assets/icons/alert.svg');
+   padding-right:10px;
+
+}
+.alerting{
+    display:flex; 
+    align-items: flex-start;
+}
+.validation-padding{
+    padding-bottom: 0px !important;
 }

@@ -22,8 +22,8 @@ export var C2PAMenu = function () {
     const c2paMenuDelimiter = '  ';
 
     //Alert message to be shown when the c2pa validation has failed
-    const c2paAlertPrefix = 'The region(s) between ';
-    const c2paAlertSuffix = ' may have been compromised';
+    const c2paAlertPrefix = 'The segment between ';
+    const c2paAlertSuffix = ' may have been tampered with';
 
     //Create an alert message if the c2pa validation has failed
     let c2paAlertMessage = function (compromisedRegions) {
