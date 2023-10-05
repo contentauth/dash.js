@@ -84,7 +84,6 @@ let createTimelineSegment = function (
             .getPropertyValue('--c2pa-failed')
             .trim();
     } else {
-        const c2paInvalidButton = document.querySelector('.c2pa-menu-button button')
         if (verificationStatus == 'true') {
             //c2pa validation passed
             segment.style.backgroundColor = getComputedStyle(
@@ -92,8 +91,6 @@ let createTimelineSegment = function (
             )
                 .getPropertyValue('--c2pa-passed')
                 .trim();
-            if(document.querySelector('.c2pa-menu-button-invalid')){
-            }
 
         } else if (verificationStatus == 'false') {
             //c2pa validation failed
@@ -102,11 +99,6 @@ let createTimelineSegment = function (
             )
                 .getPropertyValue('--c2pa-failed')
                 .trim();
-
-            if(!document.querySelector('.c2pa-menu-button-invalid')){
-                c2paInvalidButton.classList.add('c2pa-menu-button-invalid') 
-            }
-                
         } else {
             //c2pa validation not available or unkwown
             segment.style.backgroundColor = getComputedStyle(
@@ -137,6 +129,7 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
         lastSegment.style.backgroundColor;
 
     //Update the width of the segments
+    let isVideoSegmentInvalid = false;
     progressSegments.forEach((segment) => {
         const segmentStartTime = parseFloat(segment.dataset.startTime);
         const segmentEndTime = parseFloat(segment.dataset.endTime);
@@ -164,7 +157,21 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
         segment.style.zIndex = numSegments;
         numSegments--;
         console.log('[C2PA] ----');
+
+        if (segment.dataset.verificationStatus == 'false') {
+            isVideoSegmentInvalid = true;
+        }
     });
+
+    const c2paInvalidButton = document.querySelector('.c2pa-menu-button button');
+    if(c2paInvalidButton){
+        if (isVideoSegmentInvalid) {
+            c2paInvalidButton.classList.add('c2pa-menu-button-invalid'); 
+        }
+        else {
+            c2paInvalidButton.classList.remove('c2pa-menu-button-invalid');
+        }
+    } 
 };
 
 
