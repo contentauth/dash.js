@@ -17,9 +17,6 @@
 .video-js .vjs-progress-holder .vjs-play-progress {
     background-color: var(--c2pa-unknown)
 }
-
-
-
 /* Style of the c2pa menu */
 .vjs-menu-button-popup .vjs-menu {
     left: 0em;
@@ -132,4 +129,9 @@ justify-content: center !important;
 
 .validation-padding{
     padding-bottom: 0px !important;
+}
+
+/* Disable hover effect on c2pa menu */
+.vjs-workinghover .vjs-menu-button-popup:hover .vjs-menu {
+    display: none;
 }
