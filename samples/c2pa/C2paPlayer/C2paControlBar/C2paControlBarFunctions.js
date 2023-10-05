@@ -20,4 +20,3 @@ export let initializeC2PAControlBar = function (videoPlayer) {
     c2paTimeline.el().style.width = '100%';
     c2paTimeline.el().style.backgroundColor = 'transparent';
 };
-

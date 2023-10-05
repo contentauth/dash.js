@@ -236,7 +236,7 @@ export let getCompromisedRegions = function (isMonolithic, videoPlayer) {
             const startTime = 0.0;
             const endTime = videoPlayer.duration();
             compromisedRegions.push(
-                formatTime(startTime) +' ' + '-' +'' + formatTime(endTime)
+                formatTime(startTime) +'-'+ formatTime(endTime)
             );
         }
     } else {

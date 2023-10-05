@@ -21,10 +21,6 @@ export let initializeC2PAMenu = function (videoPlayer) {
                 let item = new MenuItem(this.player_, { label: i.name , id: i.id}); 
                 item.handleClick = function () {
                     //No click behavior implemented for now
-                    if(this.options_.label == 'View More'){
-                    //TODO : add redirection to Verify (needs cloud stored videos)
-                        console.log('Redirecting user to Verify')
-                    }
                         
                     return;
                 };
@@ -61,12 +57,6 @@ export let initializeC2PAMenu = function (videoPlayer) {
     const menuItems = c2paMenuInstance.c2paMenuItems();
     Object.keys(menuItems).forEach((key) => {
         const value = menuItems[key];
-        // myC2PAItems.push({
-        //     name:
-        //         value +
-        //         c2paMenuInstance.c2paMenuDelimiter() +
-        //         'Not Available',
-        // });
         myC2PAItems.push({
             name: value, 
             id: key, 
