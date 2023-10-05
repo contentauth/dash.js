@@ -135,7 +135,7 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
             if(c2paItemKey=== 'SOCIAL' ){
                 var socialArray = c2paItemValue.map(function (account) {
                     var formattedWebsite = providerInfoFromSocialId(account).name
-                    return `<span><a class="url" href=${account}>${formattedWebsite}</a></span>`
+                    return `<span><a class="url" href="${account}" onclick="window.open('${account}')">${formattedWebsite}</a></span>`
                 });
                 c2paItem.el().innerHTML =
                 '<span class="itemName nextLine">' +
@@ -178,8 +178,8 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
             //If the value is null, we hide the menu item
             c2paItem.el().style.display = 'none';
         }
-};
-
+    };
+}
 //Hide the c2pa menu
 let hideC2PAMenu = function () {
     c2paMenu.hide();

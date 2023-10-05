@@ -60,53 +60,33 @@ export var C2PAMenu = function () {
             } catch (error) {
                 console.error('[C2PA] Manifest does not exist');
             }
-            
             if (manifest != null && manifest['manifestStore'] != null) {
                 if (itemName == 'SIG_ISSUER') {
-                    return manifest['manifestStore']['activeManifest'][
-                        'signatureInfo'
-                    ]['issuer'];
+                    return manifest.manifestStore.activeManifest?.
+                        signatureInfo?.issuer;
                 }
                 if (itemName == 'DATE') {
-                    if(manifest['manifestStore']['activeManifest'][
-                        'signatureInfo']['time'] != null){
-                        var date = new Date(manifest['manifestStore']['activeManifest'][
-                            'signatureInfo']['time'])
-                        return new Intl.DateTimeFormat('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: '2-digit',
-                        }).format(date);
-                    }else{
-                        return null
-                    }
-          
-         
-     
+               
+                    var date = manifest.manifestStore?.activeManifest?.
+                        signatureInfo?.time ? new Date(manifest.manifestStore?.activeManifest?.
+                            signatureInfo?.time) : null;
+
+                    return date ? new Intl.DateTimeFormat('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                    }).format(date) : null;
                 }
                 if (itemName == 'CLAIM_GENERATOR') {
-                    return manifest['manifestStore']['activeManifest'][
-                        'claimGenerator'
-                    ];
+                    return manifest.manifestStore.activeManifest?.claimGenerator;
                 }
                 if (itemName == 'NAME') {
                     producer = selectProducer(manifest.manifestStore.activeManifest)
-                    if(producer){
-                        return producer.name
-                    }
-                    return null
-                
+                    return producer?.name ?? null
                 }
                 if (itemName == 'SOCIAL') {
-
                     socialMedia = selectSocialAccounts(manifest.manifestStore.activeManifest)
-                    if(socialMedia){
-                        return socialMedia.map(account => {
-                            return account['@id']
-                        })
-                    }
-                    return null
-                
+                    return socialMedia?.map(account => account['@id']) ?? null;
                 }
             }
             if (itemName == 'VALIDATION_STATUS') {
