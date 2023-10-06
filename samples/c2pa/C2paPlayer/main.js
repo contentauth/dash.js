@@ -48,7 +48,7 @@ export var C2PAPlayer = function (
 
             //Initialize c2pa timeline and menu
             initializeC2PAControlBar(videoPlayer);
-            initializeC2PAMenu( videoPlayer);
+            initializeC2PAMenu( videoPlayer , c2paMenu);
             //Initialize friction overlay to be displayed if initial manifest validation fails
             frictionOverlay = initializeFrictionOverlay(videoPlayer , setPlaybackStarted);
 

@@ -71,7 +71,7 @@ let createTimelineSegment = function (
     segmentStartTime,
     segmentEndTime,
     verificationStatus,
-    isManifestInvalid
+    isManifestInvalid,
 ) {
     const segment = document.createElement('div');
     segment.className = 'seekbar-play-c2pa';
@@ -95,6 +95,7 @@ let createTimelineSegment = function (
             )
                 .getPropertyValue('--c2pa-passed')
                 .trim();
+
         } else if (verificationStatus == 'false') {
             //c2pa validation failed
             segment.style.backgroundColor = getComputedStyle(
@@ -128,16 +129,16 @@ export let updateC2PATimeline = function (currentTime , videoPlayer, c2paControl
     lastSegment.dataset.endTime = currentTime;
 
     //Update the color of the progress bar tooltip to match with the that of the last segment
-    const progressControl = videoPlayer
-        .el()
-        .querySelector('.vjs-progress-control');
-    progressControl.style.color = lastSegment.style.backgroundColor;;
     const playProgressControl = videoPlayer
         .el()
         .querySelector('.vjs-play-progress');
-    playProgressControl.style.backgroundColor = lastSegment.style.backgroundColor;;
+    playProgressControl.style.backgroundColor = 
+        lastSegment.style.backgroundColor;
+    playProgressControl.style.color =
+        lastSegment.style.backgroundColor;
 
     //Update the width of the segments
+    let isVideoSegmentInvalid = false;
     progressSegments.forEach((segment) => {
         const segmentStartTime = parseFloat(segment.dataset.startTime);
         const segmentEndTime = parseFloat(segment.dataset.endTime);
@@ -165,7 +166,21 @@ export let updateC2PATimeline = function (currentTime , videoPlayer, c2paControl
         segment.style.zIndex = numSegments;
         numSegments--;
         console.log('[C2PA] ----');
+
+        if (segment.dataset.verificationStatus == 'false') {
+            isVideoSegmentInvalid = true;
+        }
     });
+
+    const c2paInvalidButton = document.querySelector('.c2pa-menu-button button');
+    if(c2paInvalidButton){
+        if (isVideoSegmentInvalid) {
+            c2paInvalidButton.classList.add('c2pa-menu-button-invalid'); 
+        }
+        else {
+            c2paInvalidButton.classList.remove('c2pa-menu-button-invalid');
+        }
+    } 
 };
     //Format time from seconds to mm:ss
 export let formatTime = function (seconds) {
@@ -205,7 +220,7 @@ export let handleC2PAValidation = function (verificationStatusBool, currentTime 
         const segment = createTimelineSegment(
             currentTime,
             currentTime,
-            verificationStatus
+            verificationStatus,
         );
         c2paControlBar.el().appendChild(segment);
         progressSegments.push(segment);
