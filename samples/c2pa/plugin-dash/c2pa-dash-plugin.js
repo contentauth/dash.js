@@ -15,7 +15,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
     //We delay the segment verification by 1 frame to keep into account video quality swtiches,
     //which are notified with 1 frame delay compared to playback
-    let verificationTime = null; 
+    let verificationTime = 0.0; 
 
     const c2pa = await createC2pa({
         wasmSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/dist/assets/wasm/toolkit_bg.wasm',

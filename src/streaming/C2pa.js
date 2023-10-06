@@ -44,7 +44,7 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
             currentQuality[type] = null;
         }
 
-        verificationTime = null;
+        verificationTime = 0.0;
     }
 
     function onFragmentReadyForC2pa(e) {
@@ -77,7 +77,7 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
                             tree[tag] = new IntervalTree();
 
                         const interval = [e.request.startTime, e.request.startTime + e.request.duration];
-                        const c2paInfo = { 'type': e.request.segmentType, 
+                        const c2paInfo = { 'type': e.request.mediaType, 
                             'manifest': manifest,
                             'interval': [e.request.startTime, e.request.startTime + e.request.duration]
                         };
@@ -91,8 +91,8 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
 
                         tree[tag].insert(interval, c2paInfo);
 
-                        if (currentQuality[e.request.segmentType] === null) {
-                            currentQuality[e.request.segmentType] = e.request.representationId;
+                        if (currentQuality[e.request.mediaType] === null) {
+                            currentQuality[e.request.mediaType] = e.request.representationId;
                         }
 
                         console.log('[C2PA] Completed verification for ' + tag, e.request.startTime, e.request.startTime + e.request.duration, manifest);
