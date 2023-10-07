@@ -41,7 +41,7 @@ let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, 
             segment = createTimelineSegment(
                 lastSegment.dataset.endTime,
                 seekTime,
-                lastSegment.dataset.verificationStatus, 
+                lastSegment.dataset.verificationStatus,
                 isManifestInvalid
             );
         }
@@ -51,11 +51,11 @@ let handleSeekC2PATimeline = function (seekTime , isMonolithic, c2paControlBar, 
             segment = createTimelineSegment(
                 lastSegment.dataset.endTime,
                 seekTime,
-                'unknown', 
+                'unknown',
                 isManifestInvalid,
             );
         }
-       
+
         c2paControlBar.el().appendChild(segment);
         progressSegments.push(segment);
     }
@@ -123,7 +123,7 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
     const playProgressControl = videoPlayer
         .el()
         .querySelector('.vjs-play-progress');
-    playProgressControl.style.backgroundColor = 
+    playProgressControl.style.backgroundColor =
         lastSegment.style.backgroundColor;
     playProgressControl.style.color =
         lastSegment.style.backgroundColor;
@@ -163,15 +163,15 @@ export let updateC2PATimeline = function (currentTime , videoPlayer) {
         }
     });
 
-    const c2paInvalidButton = document.querySelector('.c2pa-menu-button button');
+    const c2paInvalidButton = videoPlayer.el().querySelector('.c2pa-menu-button button');
     if(c2paInvalidButton){
         if (isVideoSegmentInvalid) {
-            c2paInvalidButton.classList.add('c2pa-menu-button-invalid'); 
+            c2paInvalidButton.classList.add('c2pa-menu-button-invalid');
         }
         else {
             c2paInvalidButton.classList.remove('c2pa-menu-button-invalid');
         }
-    } 
+    }
 };
 
 
