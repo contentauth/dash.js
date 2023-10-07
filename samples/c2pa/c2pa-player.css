@@ -1,26 +1,22 @@
-/* Colors for the c2pa timeline */
 :root {
-    --c2pa-passed: #147AF3;
-    --c2pa-failed: #D31510;
-    --c2pa-unknown: #909090;
+    --c2pa-passed: rgb(42, 122, 243);
+    --c2pa-failed: #d31510;
+    --c2pa-unknown: rgb(172, 172, 172);
     --background: rgba(0, 0, 0, 0.7);
-}
-
-/***TIMELINE CSS***/
-/* Default colors for the videojs timeline and tooltip */
-
+  }
+  
+  /***TIMELINE CSS***/
   /* Default colors for the videojs timeline and tooltip */
   .video-js .vjs-control-bar {
     background-color: var(--background);
   }
-  
-.video-js .vjs-progress-control {
-    color: var(--c2pa-unknown)
-}
-.video-js .vjs-progress-holder .vjs-play-progress {
-    background-color: var(--c2pa-unknown)
-}
-.vjs-icon-chapters:before, .video-js .vjs-chapters-button .vjs-icon-placeholder:before {
+  .video-js .vjs-progress-control {
+    color: var(--c2pa-unknown);
+  }
+  .video-js .vjs-progress-holder .vjs-play-progress {
+    background-color: var(--c2pa-unknown);
+  }
+  .vjs-icon-chapters:before, .video-js .vjs-chapters-button .vjs-icon-placeholder:before {
     content: ''
 }
 
@@ -80,21 +76,17 @@ z-index: 100;
     height: 22px;
     background: url('./assets/icons/cr-invalid-whitebg.svg') center center no-repeat;
 }
+
 /* Style of c2pa progress bar */
 .seekbar-play-c2pa {
     position: absolute;
     top: 0;
     height: 100%;
-}
+  }
 
 /**MENU CSS***/
-
-/* Disable hover effect on c2pa menu */
-.vjs-workinghover .vjs-menu-button-popup:hover .vjs-menu {
-    display: none;
-}
-/* Style of the c2pa menu */
-.vjs-menu-button-popup .vjs-menu {
+  /* Style of the c2pa menu */
+  .vjs-menu-button-popup .vjs-menu {
     left: 0em;
   }
   .vjs-menu-button-popup .vjs-menu .vjs-menu-content {
@@ -118,6 +110,22 @@ z-index: 100;
     font-weight: 700;
     font-size: 1.125rem;
   }
+  .vjs-menu li.vjs-menu-item {
+    display: flex;
+    justify-content: left;
+    text-transform: none;
+    font-size: 1rem;
+    border-top: 0.063rem solid #ffffff;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+    width: 13.438rem;
+    cursor: default;
+    white-space: pre-wrap;
+    text-align: left;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+  }
   
   .vjs-menu li.vjs-menu-item:last-child {
     border-top: none;
@@ -132,12 +140,7 @@ z-index: 100;
     background: none;
   }
   
-  /* Style of c2pa progress bar */
-  .seekbar-play-c2pa {
-    position: absolute;
-    top: 0;
-    height: 100%;
-  }
+  
   
   .friction-overlay {
     position: absolute;
@@ -192,4 +195,24 @@ z-index: 100;
   .vjs-workinghover .vjs-menu-button-popup:hover .vjs-menu {
     display: none;
   }
-  
+  /***FRICTION OVERLAY***/
+.friction-overlay {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    background-color: rgba(160, 157, 157, 0.157);
+    width: 40%;
+    padding: 10px;
+    border-radius: 5px;
+
+    font-family: 'Verdana';
+    font-size: 1em;
+    color: #fff;
+}
+
+.friction-overlay .friction-button {
+    background-color: #007BFF;
+    border-radius: 5px;
+    padding: 5px;
+    float: right;
+}
