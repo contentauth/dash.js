@@ -9,7 +9,7 @@
     <link href="../../lib/main.css" rel="stylesheet">
 
     <!-- video-js -->
-    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.3.0/video.js"></script>
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
 
     <!-- c2pa player -->
@@ -41,9 +41,11 @@
 
             video = document.querySelector("#videoPlayer");
             
+            var options = {fluid: true , controlBar: { children: ['playToggle' , 'progressControl', "currentTimeDisplay", 'volumePanel', 'pictureInPictureToggle', 'fullscreenToggle']}}
+
             /* Create videojs player and c2pa player */
             /* Responsible for UI and playback control */
-            var videoJsPlayer = videojs(video, {fluid: true});
+            var videoJsPlayer = videojs(video, options)
             const isMonolithic = true;
             c2paPlayer = new C2PAPlayer(videoJsPlayer, video, isMonolithic);
             c2paPlayer.initialize();

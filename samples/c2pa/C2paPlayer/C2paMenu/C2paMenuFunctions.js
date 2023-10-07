@@ -1,9 +1,12 @@
 import { C2PAMenu } from './C2paMenu.js';
+<<<<<<< HEAD
 import { providerInfoFromSocialId } from './Providers.js';
 
 //C2PA menu instance
+=======
+>>>>>>> c2pa-dash
 let c2paMenuInstance = new C2PAMenu();
-export let initializeC2PAMenu = function (videoPlayer) {
+export let initializeC2PAMenu = function (videoPlayer, c2paMenu) {
     const MenuButton = videojs.getComponent('MenuButton');
     const MenuItem = videojs.getComponent('MenuItem');
 
@@ -50,7 +53,7 @@ export let initializeC2PAMenu = function (videoPlayer) {
 
     // Register as a component, so it can be added
     videojs.registerComponent('C2PAMenuButton', C2PAMenuButton);
-
+   
     //Add items to c2pa menu
     let myC2PAItems = [];
     const menuItems = c2paMenuInstance.c2paMenuItems();
@@ -68,7 +71,12 @@ export let initializeC2PAMenu = function (videoPlayer) {
         {
             controlText: 'Content Credentials',
             title: 'Content Credentials',
+<<<<<<< HEAD
             myItems: myC2PAItems,
+=======
+            myItems: c2pAItems,
+            className: 'c2pa-menu-button'
+>>>>>>> c2pa-dash
         },
         0,
     ); //0 indicates that the menu button will be the first item in the control bar

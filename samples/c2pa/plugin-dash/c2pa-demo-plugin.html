@@ -11,7 +11,7 @@
     <link href="../../lib/main.css" rel="stylesheet" />
 
     <!-- video-js -->
-    <script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.3.0/video.js"></script>
     <link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet" />
 
     <!-- c2pa player -->
@@ -49,12 +49,14 @@
         /* Create dashjs player */
         /* Responsible for streaming video */
         dashPlayer = dashjs.MediaPlayer().create();
+        var options = {fluid: true , controlBar: { children: ['playToggle' , 'progressControl', "currentTimeDisplay", 'volumePanel','pictureInPictureToggle','fullscreenToggle']}}
 
         /* Create videojs player and c2pa player */
         /* Responsible for UI and playback control */
-        var videoJsPlayer = videojs('videoPlayer', { fluid: true });
+        var videoJsPlayer = videojs('videoPlayer', options)
         c2paPlayer = new C2PAPlayer(videoJsPlayer, video);
         c2paPlayer.initialize();
+
 
         /* Create c2pa plugin*/
         /* Responsible for executing c2pa validation */
