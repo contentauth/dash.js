@@ -58,6 +58,8 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
         e['c2pa_status'] = updateEvent;
         onPlaybackTimeUpdated(e);
     });
+
+
 }
 
-export {c2pa_init};
+export { c2pa_init };

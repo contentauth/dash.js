@@ -1,6 +1,6 @@
 import IntervalTree from 'https://cdn.jsdelivr.net/npm/@flatten-js/interval-tree@1.0.20/dist/main.esm.js';
+import { createC2pa} from 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/+esm';
 
-import { createC2pa } from 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/+esm';
 
 async function c2pa_init(player, onPlaybackTimeUpdated) {
     const C2paSupportedMediaTypes = ['video', 'audio'];
@@ -32,7 +32,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
                 let tag = chunk.streamId + '-' + chunk.mediaInfo.type + '-' + chunk.representationId;
 
-                console.log('[C2PA] Processing verification for ' + tag, chunk.start, chunk.end);
+                console.log('[C2PA] Processing verification for ' + tag, chunk.start, chunk.end , c2pa);
 
                 if (chunk.segmentType == 'InitializationSegment') {
                     //TODO: mimetype should change based on actual type from chunk
@@ -49,7 +49,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
                     const interval = [chunk.start, chunk.end];
                     const c2paInfo = { 'type': chunk.segmentType, 
                         'manifest': manifest,
-                        'interval': [chunk.start, chunk.end]
+                        'interval': [chunk.start, chunk.end],
                     };
 
                     tree[tag].search(interval).forEach((seg) => {
