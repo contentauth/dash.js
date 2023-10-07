@@ -164,11 +164,9 @@ export function getTimelineFunctions() {
             }
         });
 
-        console.log('videoPlayer.el()', videoPlayer.el())
         const c2paInvalidButton = videoPlayer.el().querySelector('.c2pa-menu-button button');
         if(c2paInvalidButton){
             if (isVideoSegmentInvalid) {
-                console.log('c2paInvalidButton', c2paInvalidButton)
                 c2paInvalidButton.classList.add('c2pa-menu-button-invalid');
             }
             else {
