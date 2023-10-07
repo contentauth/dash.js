@@ -7,7 +7,7 @@
 import { initializeC2PAControlBar } from './C2paControlBar/C2paControlBarFunctions.js';
 import { displayFrictionOverlay, initializeFrictionOverlay } from './C2paFrictionModal/C2paFrictionModalFunctions.js';
 import { adjustC2PAMenu, initializeC2PAMenu, updateC2PAMenu } from './C2paMenu/C2paMenuFunctions.js';
-import { getCompromisedRegions, handleC2PAValidation, handleOnSeeked, handleOnSeeking, updateC2PATimeline } from './C2paTimeline/C2paTimelineFunctions.js';
+import { getTimelineFunctions } from './C2paTimeline/C2paTimelineFunctions.js';
 
 export var C2PAPlayer = function (
     videoJsPlayer,
@@ -21,6 +21,7 @@ export var C2PAPlayer = function (
     //c2pa menu and control bar elements
     let c2paMenu;
     let c2paControlBar;
+    let { getCompromisedRegions, handleC2PAValidation, handleOnSeeked, handleOnSeeking, updateC2PATimeline } = getTimelineFunctions();
 
     //An overlay to be shown to the user in case the initial manifest validation fails
     //Used to warn the user the content cannot be trusted
@@ -44,7 +45,7 @@ export var C2PAPlayer = function (
     //Public API
     return {
         initialize: function () {
-            console.log('[C2PA] Initializing C2PAPlayer');
+            console.log('[C2PA] Initializing C2PAPlayer', videoPlayer, videoElement);
 
             //Initialize c2pa timeline and menu
             initializeC2PAControlBar(videoPlayer);
