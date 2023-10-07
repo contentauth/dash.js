@@ -1,4 +1,7 @@
-export let initializeFrictionOverlay = function (videoPlayer , setPlaybackStarted) {
+export let initializeFrictionOverlay = function (
+    videoPlayer,
+    setPlaybackStarted,
+) {
     let frictionOverlay;
     //Create the friction overlay container
     frictionOverlay = document.createElement('div');
@@ -7,7 +10,7 @@ export let initializeFrictionOverlay = function (videoPlayer , setPlaybackStarte
     //Create the warnimg message to be shown to the user when initial manifest validation fails
     let warnMessage = document.createElement('p');
     warnMessage.textContent =
-        'The information in this video\'s Content Credentials is no longer trustworthy and the video\'s history cannot be confirmed.';
+    'The information in this video\'s Content Credentials is no longer trustworthy and the video\'s history cannot be confirmed.';
 
     //Create "Watch Anyway" button
     let watchAnywayBtn = document.createElement('button');
@@ -27,7 +30,7 @@ export let initializeFrictionOverlay = function (videoPlayer , setPlaybackStarte
 
     //The user can click the "Watch Anyway" button to continue watching the video
     watchAnywayBtn.addEventListener('click', function () {
-        //Close overlay and resume playback
+    //Close overlay and resume playback
         frictionOverlay.style.display = 'none';
         setPlaybackStarted();
         videoPlayer.play();
@@ -37,7 +40,11 @@ export let initializeFrictionOverlay = function (videoPlayer , setPlaybackStarte
 };
 
 //Display the friction overlay if the initial manifest validation fails
-export let displayFrictionOverlay = function (playbackStarted , videoPlayer , frictionOverlay) {
+export let displayFrictionOverlay = function (
+    playbackStarted,
+    videoPlayer,
+    frictionOverlay,
+) {
     if (!playbackStarted) {
         videoPlayer.pause();
         frictionOverlay.style.display = 'block';

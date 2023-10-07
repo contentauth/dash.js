@@ -8,7 +8,6 @@ export let initializeC2PAMenu = function (videoPlayer) {
     const MenuItem = videojs.getComponent('MenuItem');
 
     class C2PAMenuButton extends MenuButton {
-
         constructor(player, options) {
             super(player, options);
             this.closeC2paMenu = false;
@@ -18,10 +17,10 @@ export let initializeC2PAMenu = function (videoPlayer) {
             // Must return an array of `MenuItem`s
             // Options passed in `addChild` are available at `this.options_`
             return this.options_.myItems.map((i) => {
-                let item = new MenuItem(this.player_, { label: i.name , id: i.id}); 
+                let item = new MenuItem(this.player_, { label: i.name, id: i.id });
                 item.handleClick = function () {
                     //No click behavior implemented for now
-                        
+
                     return;
                 };
                 return item;
@@ -58,8 +57,8 @@ export let initializeC2PAMenu = function (videoPlayer) {
     Object.keys(menuItems).forEach((key) => {
         const value = menuItems[key];
         myC2PAItems.push({
-            name: value, 
-            id: key, 
+            name: value,
+            id: key,
         });
     });
 
@@ -69,19 +68,21 @@ export let initializeC2PAMenu = function (videoPlayer) {
         {
             controlText: 'Content Credentials',
             title: 'Content Credentials',
-            myItems:myC2PAItems,
+            myItems: myC2PAItems,
         },
-        0
+        0,
     ); //0 indicates that the menu button will be the first item in the control bar
 };
 
 //Adjust c2pa menu size with respect to the player size
-export let adjustC2PAMenu = function (c2paMenu , videoElement , c2paMenuHeightOffset) {
+export let adjustC2PAMenu = function (
+    c2paMenu,
+    videoElement,
+    c2paMenuHeightOffset,
+) {
     const menuContent = c2paMenu
         .el()
-        .querySelector(
-            '.vjs-menu-button-popup .vjs-menu .vjs-menu-content'
-        );
+        .querySelector('.vjs-menu-button-popup .vjs-menu .vjs-menu-content');
 
     const playerWidth = videoElement.offsetWidth;
     const playerHeight = videoElement.offsetHeight - c2paMenuHeightOffset;
@@ -90,20 +91,22 @@ export let adjustC2PAMenu = function (c2paMenu , videoElement , c2paMenuHeightOf
     menuContent.style.height = `${playerHeight}px`;
 };
 
-
 //Update the c2pa menu items with the values from the c2pa manifest
-export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , videoPlayer , getCompromisedRegions) {
-    //Get all the items in the c2pa menu
-    //Get all the items in the c2pa menu
-   
+export let updateC2PAMenu = function (
+    c2paStatus,
+    c2paMenu,
+    isMonolithic,
+    videoPlayer,
+    getCompromisedRegions,
+) {
     //Get all the c2pa menu items
-    const c2paMenuItems = c2paMenu.items; 
-    const compromisedRegions = getCompromisedRegions(isMonolithic , videoPlayer);
+    const c2paMenuItems = c2paMenu.items;
+    const compromisedRegions = getCompromisedRegions(isMonolithic, videoPlayer);
 
-    for (let i = 0; i < c2paMenuItems.length ; i++) {
-        //Menu items are organized as key/name + value, separated by a delimiter
+    for (let i = 0; i < c2paMenuItems.length; i++) {
+    //Menu items are organized as key/name + value, separated by a delimiter
         const c2paItem = c2paMenuItems[i];
-        const c2paItemName = c2paItem.options_.label; 
+        const c2paItemName = c2paItem.options_.label;
         const c2paItemKey = c2paItem.options_.id;
 
         //Based on the plain name of the menu item, we retrieve the key from the c2paMenuInstance
@@ -111,65 +114,44 @@ export let updateC2PAMenu = function (c2paStatus, c2paMenu , isMonolithic , vide
         const c2paItemValue = c2paMenuInstance.c2paItem(
             c2paItemKey,
             c2paStatus,
-            compromisedRegions
+            compromisedRegions,
         );
-        console.log(
-            '[C2PA] Menu item: ',
-            c2paItemName,
-            c2paItemKey,
-            c2paItemValue
-        );
+        console.log('[C2PA] Menu item: ', c2paItemName, c2paItemKey, c2paItemValue);
 
         if (c2paItemValue != null) {
             //formatting for social media links
-            if(c2paItemKey=== 'SOCIAL' ){
+            if (c2paItemKey === 'SOCIAL') {
                 var socialArray = c2paItemValue.map(function (account) {
-                    var formattedWebsite = providerInfoFromSocialId(account).name
-                    return `<span><a class="url" href="${account}" onclick="window.open('${account}')">${formattedWebsite}</a></span>`
+                    var formattedWebsite = providerInfoFromSocialId(account).name;
+                    return `<span><a class="url" href="${account}" onclick="window.open('${account}')">${formattedWebsite}</a></span>`;
                 });
-                c2paItem.el().innerHTML =
-                '<span class="itemName nextLine">' +
-                c2paItemName +
-                '</span>' +
-                c2paMenuInstance.c2paMenuDelimiter() + socialArray.join('\n')
-            }
-            //styling alerts
-            else if(c2paItemKey=== 'ALERT' ){
-                c2paItem.el().innerHTML = '<div class="alert-div alerting">' +'<img class="alert-icon"></img>'+ '<div>' +
-                c2paMenuInstance.c2paMenuDelimiter() + c2paItemValue +'</div>' +'</div>'
-            }
-            //styling the validation status in cases where there is an alert
-            
-            else if(c2paItemKey=== 'VALIDATION_STATUS' && c2paItemValue==='Failed' ){
-                c2paItem.el().innerHTML =
-                '<span class="itemName nextLine">' +
-                c2paItemName +
-                '</span>' 
-                c2paItem.el().classList.add('validation-padding')
+                c2paItem.el().innerHTML = `<span class="itemName"> ${c2paItemName} </span> ${c2paMenuInstance.c2paMenuDelimiter()} ${socialArray.join(
+                    '\n',
+                )}`;
+            } else if (c2paItemKey === 'WEBSITE') {
+                c2paItem.el().innerHTML = `<div class="itemName"> ${c2paItemName}</div>${c2paMenuInstance.c2paMenuDelimiter()}<a class="url" href="${c2paItemValue}" onclick="window.open('${c2paItemValue}')">${c2paItemValue}</a>`;
+                
+            } else if (c2paItemKey === 'ALERT') {
+                c2paItem.el().innerHTML = `<div class="alert-div"> <img class="alert-icon"></img> <div> ${c2paItemValue} </div></div>`;
+            } else if (
+                c2paItemKey === 'VALIDATION_STATUS' && c2paItemValue === 'Failed'
+            ) {
+                c2paItem.el().innerHTML = `<span class="itemName nextLine"> ${c2paItemName} </span>`;
+                c2paItem.el().classList.add('validation-padding');
             }
             //If the value is not null, we update the menu item text and show it
-            else if (c2paItemValue.length >= 32) {
-                c2paItem.el().innerHTML =
-                    '<span class="itemName">' +
-                    c2paItemName +
-                    '</span>' +
-                    c2paMenuInstance.c2paMenuDelimiter() +'<br/>' + 
-                    c2paItemValue;
+            else if (c2paItemValue.length >= 23) {
+                c2paItem.el().innerHTML = `<div class="itemName"> ${c2paItemName}</div>${c2paMenuInstance.c2paMenuDelimiter()}${c2paItemValue}`;
             } else {
-                c2paItem.el().innerHTML = 
-                    '<span class="itemName">' +
-                    c2paItemName +
-                    '</span>' +
-                    c2paMenuInstance.c2paMenuDelimiter() +
-                    c2paItemValue;
+                c2paItem.el().innerHTML = `<span class="itemName"> ${c2paItemName} </span> ${c2paMenuInstance.c2paMenuDelimiter()} ${c2paItemValue}`;
             }
             c2paItem.el().style.display = 'block';
         } else {
             //If the value is null, we hide the menu item
             c2paItem.el().style.display = 'none';
         }
-    };
-}
+    }
+};
 //Hide the c2pa menu
 let hideC2PAMenu = function () {
     c2paMenu.hide();
