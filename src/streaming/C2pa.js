@@ -43,6 +43,11 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
             onVideoQualityChanged,
             instance
         );
+        eventBus.on(
+            MediaPlayerEvents.PLAYBACK_ENDED,
+            onPlaybackEnded,
+            instance
+        );
 
         tree = {};
         initFragment = {};
@@ -148,6 +153,11 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
         currentQuality[e.mediaType] = getCurrentTrackFor(
             e.mediaType
         ).bitrateList[e.newQuality].id;
+    }
+
+    function onPlaybackEnded() {
+        console.log('[C2PA] Playback ended');
+        verificationTime = 0.0;
     }
 
     function getC2paVerificationStatus(time, streamInfo) {

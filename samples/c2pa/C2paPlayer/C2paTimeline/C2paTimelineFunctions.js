@@ -3,13 +3,14 @@ export function getTimelineFunctions() {
   let progressSegments = [];
 
   let handleOnSeeked = function (time) {
+    console.log('[C2PA] Player seeked: ', time);
     const seeking = false;
     return seeking;
   };
 
   let handleOnSeeking = function (time , playbackStarted , lastPlaybackTime , isMonolithic , c2paControlBar , videoPlayer) {
     console.log('[C2PA] Player seeking: ', time);
-    const seeking = true;
+    let seeking = true;
 
     if (time === 0) {
         console.log('[C2PA] Player resetting');
@@ -19,7 +20,9 @@ export function getTimelineFunctions() {
 
         progressSegments = [];
         const resetPlaybackTime = 0.0;
+        seeking = false;
 
+        updateC2PAButton(videoPlayer);
         return [seeking , resetPlaybackTime];
     }
 
@@ -165,6 +168,10 @@ let createTimelineSegment = function (
       }
     });
 
+    updateC2PAButton(videoPlayer, isVideoSegmentInvalid);
+  };
+
+  let updateC2PAButton = function (videoPlayer, isVideoSegmentInvalid = false) {
     const c2paInvalidButton = videoPlayer
       .el()
       .querySelector('.c2pa-menu-button button');
