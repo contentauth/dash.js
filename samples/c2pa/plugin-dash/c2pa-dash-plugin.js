@@ -78,9 +78,9 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
         currentQuality[e.mediaType] = player.getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id;
     });
 
-    player.on(dashjs.MediaPlayer.events['PLAYBACK_ENDED'], function (e) {
-        console.log('[C2PA] Playback ended');
-        verificationTime = 0.0;
+    player.on(dashjs.MediaPlayer.events['PLAYBACK_SEEKING'], function (e) {
+        console.log('[C2PA] Streaming seeking', e);
+        verificationTime = e.seekTime;
     });
 
     player.on(dashjs.MediaPlayer.events['PLAYBACK_TIME_UPDATED'], function (e) {
