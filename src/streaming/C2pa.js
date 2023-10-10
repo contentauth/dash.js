@@ -156,7 +156,7 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
     }
 
     function onPlaybackSeeking(e) {
-        console.log('[C2PA] Streaming seeking', e);
+        console.log('[C2PA] Streaming seeking');
         verificationTime = e.seekTime;
     }
 

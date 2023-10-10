@@ -79,7 +79,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
     });
 
     player.on(dashjs.MediaPlayer.events['PLAYBACK_SEEKING'], function (e) {
-        console.log('[C2PA] Streaming seeking', e);
+        console.log('[C2PA] Streaming seeking');
         verificationTime = e.seekTime;
     });
 
