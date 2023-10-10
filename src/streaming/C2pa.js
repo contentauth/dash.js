@@ -44,8 +44,8 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
             instance
         );
         eventBus.on(
-            MediaPlayerEvents.PLAYBACK_ENDED,
-            onPlaybackEnded,
+            MediaPlayerEvents.PLAYBACK_SEEKING,
+            onPlaybackSeeking,
             instance
         );
 
@@ -155,9 +155,9 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
         ).bitrateList[e.newQuality].id;
     }
 
-    function onPlaybackEnded() {
-        console.log('[C2PA] Playback ended');
-        verificationTime = 0.0;
+    function onPlaybackSeeking(e) {
+        console.log('[C2PA] Streaming seeking');
+        verificationTime = e.seekTime;
     }
 
     function getC2paVerificationStatus(time, streamInfo) {
