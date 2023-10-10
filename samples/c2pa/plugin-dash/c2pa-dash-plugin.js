@@ -15,7 +15,7 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
 
     //We delay the segment verification by 1 frame to keep into account video quality swtiches,
     //which are notified with 1 frame delay compared to playback
-    let verificationTime = null; 
+    let verificationTime = 0.0; 
 
     const c2pa = await createC2pa({
         wasmSrc: 'https://cdn.jsdelivr.net/npm/c2pa@0.18.0-fmp4-alpha.1/dist/assets/wasm/toolkit_bg.wasm',
@@ -76,6 +76,11 @@ async function c2pa_init(player, onPlaybackTimeUpdated) {
     player.on(dashjs.MediaPlayer.events['QUALITY_CHANGE_RENDERED'], function (e) {
         console.log('[C2PA] Video quality changed for type ' + e.mediaType, player.getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id);
         currentQuality[e.mediaType] = player.getCurrentTrackFor(e.mediaType).bitrateList[e.newQuality].id;
+    });
+
+    player.on(dashjs.MediaPlayer.events['PLAYBACK_ENDED'], function (e) {
+        console.log('[C2PA] Playback ended');
+        verificationTime = 0.0;
     });
 
     player.on(dashjs.MediaPlayer.events['PLAYBACK_TIME_UPDATED'], function (e) {

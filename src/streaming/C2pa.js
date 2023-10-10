@@ -43,6 +43,11 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
             onVideoQualityChanged,
             instance
         );
+        eventBus.on(
+            MediaPlayerEvents.PLAYBACK_ENDED,
+            onPlaybackEnded,
+            instance
+        );
 
         tree = {};
         initFragment = {};
@@ -54,7 +59,7 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
             currentQuality[type] = null;
         }
 
-        verificationTime = null;
+        verificationTime = 0.0;
     }
 
     function onFragmentReadyForC2pa(e) {
@@ -73,6 +78,8 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
             e.request.mediaType +
             "-" +
             e.request.representationId;
+
+        console.log("[C2PA] Processing verification for " + tag, e.request.startTime, e.request.startTime + e.request.duration);
 
         // TODO(hawang) change the mimetype the actual one from the response
         // TODO(hawang) use InitCache created for each media type in BufferController instead of saving here
@@ -94,7 +101,7 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
                             e.request.startTime + e.request.duration,
                         ];
                         const c2paInfo = {
-                            type: e.request.segmentType,
+                            type: e.request.mediaType,
                             manifest: manifest,
                             interval: [
                                 e.request.startTime,
@@ -117,8 +124,8 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
 
                         tree[tag].insert(interval, c2paInfo);
 
-                        if (currentQuality[e.request.segmentType] === null) {
-                            currentQuality[e.request.segmentType] =
+                        if (currentQuality[e.request.mediaType] === null) {
+                            currentQuality[e.request.mediaType] =
                                 e.request.representationId;
                         }
 
@@ -146,6 +153,11 @@ function C2paController(_eventBus, _getCurrentTrackFor) {
         currentQuality[e.mediaType] = getCurrentTrackFor(
             e.mediaType
         ).bitrateList[e.newQuality].id;
+    }
+
+    function onPlaybackEnded() {
+        console.log('[C2PA] Playback ended');
+        verificationTime = 0.0;
     }
 
     function getC2paVerificationStatus(time, streamInfo) {

@@ -65,7 +65,7 @@ export var C2PAMenu = function () {
 
       try {
         manifest = c2paStatus.details.video.manifest;
-        console.log('this is the manifest', manifest);
+        console.log('[C2PA] This is the manifest', manifest);
       } catch (error) {
         console.error('[C2PA] Manifest does not exist');
       }
