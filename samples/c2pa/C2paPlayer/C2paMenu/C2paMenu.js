@@ -85,25 +85,25 @@ export var C2PAMenu = function () {
               }).format(date)
             : null;
         }
-        if (itemName == 'CLAIM_GENERATOR') {
-          generator = selectFormattedGenerator(activeManifest);
-          return generator ?? null;
-        }
+        // if (itemName == 'CLAIM_GENERATOR') {
+        //   generator = selectFormattedGenerator(activeManifest);
+        //   return generator ?? null;
+        // }
         if (itemName == 'NAME') {
           producer = selectProducer(activeManifest);
           return producer?.name ?? null;
         }
-        if (itemName == 'LOCATION') {
-          longitude =
-            activeManifest?.assertions.get('stds.exif')[0]?.data[
-              'EXIF:GPSLatitude'
-            ];
-          latitude =
-            activeManifest?.assertions.get('stds.exif')[0]?.data[
-              'EXIF:GPSLatitude'
-            ];
-          return [parseFloat(longitude), parseFloat(latitude)] ?? null;
-        }
+        // if (itemName == 'LOCATION') {
+        //   longitude =
+        //     activeManifest?.assertions.get('stds.exif')[0]?.data[
+        //       'EXIF:GPSLatitude'
+        //     ];
+        //   latitude =
+        //     activeManifest?.assertions.get('stds.exif')[0]?.data[
+        //       'EXIF:GPSLatitude'
+        //     ];
+        //   return [parseFloat(longitude), parseFloat(latitude)] ?? null;
+        // }
         if (itemName == 'WEBSITE') {
           website = activeManifest.assertions?.get(
             'stds.schema-org.CreativeWork',
