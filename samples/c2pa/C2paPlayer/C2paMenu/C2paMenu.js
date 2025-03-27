@@ -110,7 +110,10 @@ export var C2PAMenu = function () {
           )[0]?.data.url;
           return website ?? null;
         }
-        if (itemName == 'SOCIAL') {
+        if (
+          itemName == 'SOCIAL' &&
+          selectSocialAccounts(activeManifest).length > 0
+        ) {
           socialMedia = selectSocialAccounts(activeManifest);
           return socialMedia?.map((account) => account['@id']) ?? null;
         }
